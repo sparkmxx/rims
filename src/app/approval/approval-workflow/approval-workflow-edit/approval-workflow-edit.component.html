@@ -1,0 +1,124 @@
+<nz-modal [(nzVisible)]="isVisible" nzWidth="80%" [nzTitle]="modalTitle" [nzContent]="modalContent"
+  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+  <ng-template #modalTitle>
+    数据字典
+  </ng-template>
+
+  <ng-template #modalContent>
+    <div>
+      <form nz-form [formGroup]="validateForm" class="ant-advanced-search-form">
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="workflowType">审批类型</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select formControlName="workflowType" style="width: 160px;"
+                  [(ngModel)]="createOrUpdateApprovalWorkflowInput.workflowType" nzAllowClear nzPlaceHolder="审批类型">
+                  <nz-option *ngFor="let option of enumArray.WorkflowType" [nzValue]="option.value"
+                    [nzLabel]="option.description"></nz-option>
+                </nz-select>
+                <nz-form-explain
+                  *ngIf="validateForm.get('workflowType').dirty && validateForm.get('workflowType').errors">
+                  请选择 审批类型
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="organizationId">部门</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-group>
+                    <nz-tree-select style="display: block;"  formControlName="organizationId" [nzNodes]="treeNodes" nzShowSearch
+                    nzPlaceHolder="部门" [(ngModel)]="createOrUpdateApprovalWorkflowInput.organizationId" 
+                    >
+                  </nz-tree-select>
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">名称</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="name" placeholder="名称" name="name" [(ngModel)]="createOrUpdateApprovalWorkflowInput.name">
+                <nz-form-explain *ngIf="validateForm.get('name').dirty && validateForm.get('name').errors">
+                  请填写字典名称
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </form>
+      <div nz-row class="m-t-20">
+        <div nz-col nzSpan="4">
+          <button nz-button nzType="default" (click)="addApprovalWorkflowDetails()">添加审批流程</button>
+        </div>
+        <div nz-col nzSpan="20">
+          <nz-table #workflowDetailsDetails nzBordered
+            [nzData]="createOrUpdateApprovalWorkflowInput.approvalWorkflowDetails" nzHideOnSinglePage="true"
+            [nzPageSize]="15" [nzScroll]="{y: '340px' }">
+            <thead>
+              <tr>
+                <th nzWidth="60px" nzLeft="0px">序</th>
+                <th nzWidth="250px">角色</th>
+                <th >自动审批</th>
+                <th nzWidth="200px">排序</th>
+                <th nzWidth="60px" nzRight="0px">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of workflowDetailsDetails.data;let i = index;">
+                <td nzLeft="0px">{{i+1}}</td>
+                <td >
+                  <div class="editable-cell">
+                    <div class="editable-cell-text-wrapper">
+                      <nz-select style="width: 140px;" [(ngModel)]="item.roleId" nzAllowClear nzPlaceHolder="角色">
+                        <nz-option *ngFor="let option of roles" [nzValue]="option.id" [nzLabel]="option.displayName">
+                        </nz-option>
+                      </nz-select>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="editable-cell">
+                    <div class="editable-cell-text-wrapper">
+                      <nz-switch [(ngModel)]="item.isAutoApproval" nzCheckedChildren="是" nzUnCheckedChildren="否">
+                      </nz-switch>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="editable-cell">
+                    <div class="editable-cell-text-wrapper">
+                      <nz-input-number [(ngModel)]="item.sortRank" [nzMin]="1" [nzMax]="1000" [nzStep]="1">
+                      </nz-input-number>
+                    </div>
+                  </div>
+                </td>
+  
+
+                <td nzRight="0px">
+                  <div class="editable-row-operations">
+                    <button nz-button nzSize="small" nzShape="circle" nzType="default"
+                      (click)="deleteDataDictionaryDetails(item)"><i nz-icon type="minus" theme="outline"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </div>
+
+    </div>
+  </ng-template>
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">取消</button>
+    <button nz-button nzType="primary" (click)="save()" [disabled]="!validateForm.valid"
+      [nzLoading]="isConfirmLoading">保存
+    </button>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,120 @@
+<nz-drawer [nzVisible]="visible" nzPlacement="right" nzTitle="用户" (nzOnClose)="close()" [nzWidth]="720">
+
+  <nz-tabset>
+    <nz-tab nzTitle="用户信息">
+      <form nz-form [formGroup]="validateForm">
+        <!-- <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24">所属组织</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-input-group>
+              <nz-tree-select style="width:100%;" [nzNodes]="treeNodes" nzShowSearch nzPlaceHolder="所属组织"
+                [(ngModel)]="userDto.organizationUnitId" [ngModelOptions]="{standalone: true}">
+              </nz-tree-select>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item> -->
+        <nz-form-item>
+
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">名称</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input formControlName="name" id="name" [(ngModel)]="userDto.user.name" />
+            <nz-form-explain *ngIf="validateForm.get('name')?.dirty && validateForm.get('name')?.errors">
+              请填写名称!
+            </nz-form-explain>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="surname">姓氏</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input formControlName="surname" id="surname" [(ngModel)]="userDto.user.surname" />
+            <nz-form-explain *ngIf="validateForm.get('surname')?.dirty && validateForm.get('surname')?.errors">
+              请填写姓氏!
+            </nz-form-explain>
+          </nz-form-control>
+        </nz-form-item>
+
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="emailAddress">邮箱</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input formControlName="emailAddress" id="emailAddress" [(ngModel)]="userDto.user.emailAddress" />
+            <nz-form-explain
+              *ngIf="validateForm.get('emailAddress')?.dirty && validateForm.get('emailAddress')?.errors">
+              请填写正确的邮箱!
+            </nz-form-explain>
+          </nz-form-control>
+        </nz-form-item>
+
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="userName">用户名</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input formControlName="userName" id="userName" [(ngModel)]="userDto.user.userName" />
+            <nz-form-explain *ngIf="validateForm.get('userName')?.dirty && validateForm.get('userName')?.errors">
+              请填写用户名!
+            </nz-form-explain>
+          </nz-form-control>
+        </nz-form-item>
+
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="password">密码</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input type="password" formControlName="password" id="password"
+              [(ngModel)]="userDto.user.password" />
+            <nz-form-explain *ngIf="validateForm.get('password')?.dirty && validateForm.get('password')?.errors">
+              请填写密码!
+            </nz-form-explain>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="confirmPassword">确认密码</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input type="password" formControlName="confirmPassword" id="confirmPassword"
+              [(ngModel)]="confirmPassword" />
+            <nz-form-explain
+              *ngIf="validateForm.get('confirmPassword')?.dirty && validateForm.get('confirmPassword')?.errors">
+              密码不一致!
+            </nz-form-explain>
+          </nz-form-control>
+        </nz-form-item>
+
+
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="dockingAccount">对接账号</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input [(ngModel)]="userDto.user.dockingAccount" [ngModelOptions]="{standalone: true}" />
+
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="dockingPassword">对接密码</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input type="password" [(ngModel)]="userDto.user.dockingPassword"
+              [ngModelOptions]="{standalone: true}" />
+
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-tab>
+    <nz-tab nzTitle="角色">
+      <div class="row">
+        <div *ngFor="let item of roles" class="role-list col-xs-6">
+          <label nz-checkbox [(ngModel)]="mapOfCheckedId[item.name]">{{item.displayName}}</label>
+        </div>
+      </div>
+    </nz-tab>
+
+  </nz-tabset>
+
+  <div class="drawer-footer">
+    <button type="button" (click)="close()" class="ant-btn" style="margin-right: 8px;"><span>取消</span></button>
+    <button type="button" (click)="saveUser()" class="ant-btn ant-btn-primary"><span>确认</span></button>
+  </div>
+</nz-drawer>
+<!-- 
+[disabled]="!validateForm.valid" -->

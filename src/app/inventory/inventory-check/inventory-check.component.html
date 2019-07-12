@@ -1,0 +1,117 @@
+<nz-card class="ch-tab">
+  <div class="search-list">
+    <button class="m-r-20" nz-button nzType="default" (click)="createInventoryRecord()">保存</button>
+    <button class="m-r-20" nz-button nzType="default" (click)="showScan()">扫码盘点</button>
+    <button class="m-r-20" nz-button nzType="default" (click)="back()">返回</button>
+    <button class="m-r-20" nz-button nzType="default" (click)="list()">刷新</button>
+    <button class="m-r-20" nz-button nzType="primary" (click)="finishedInventoryRecord()">盘点完成</button>
+
+    <button class="m-r-20" nz-button nzType="danger" *ngIf="errorInfos.length>0" (click)="(isVisible=true)">当前未录入条码信息 <i
+        nz-icon nzType="bars" nzTheme="outline"></i></button>
+  </div>
+  <nz-table class="m-t-20 small-table" #nzInventoryTable [nzData]="[data]" [nzFrontPagination]=false
+    [nzLoading]="loading" nzHideOnSinglePage="true">
+    <thead>
+      <tr>
+        <th>序</th>
+        <th>盘点单号</th>
+        <th>盘点人</th>
+        <th>盘点部门</th>
+        <th>创建日期</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzInventoryTable.data; let i = index ;">
+        <td>{{i+1}}</td>
+        <td>{{item.inventoryOrderNo}}</td>
+        <td>{{item.applicantUserId | formatUser}}</td>
+        <td>{{item.organizationName}}</td>
+        <td>{{item.applicationTime | date:'yyyy-MM-dd'}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <nz-table class="m-t-20 small-table" #nzTable [nzData]="data.details" [nzFrontPagination]=false [nzLoading]="loading"
+    [nzScroll]="{ x: '1250px', y: '540px' }" nzHideOnSinglePage="true">
+    <thead>
+      <tr>
+        <th nzWidth="50px" nzLeft="0px">序</th>
+        <th nzWidth="250px" nzLeft="50px">名称</th>
+        <th nzWidth="130px">院内码</th>
+        <th nzWidth="80px">计划数量</th>
+        <th nzWidth="80px">实际数量</th>
+        <th nzWidth="120px">手工数量</th>
+        <th nzWidth="80px" >扫码数量</th>
+        <th nzWidth="150px">批号</th>
+        <th nzWidth="120px">效期</th>
+        <th nzWidth="100px">规格</th>
+        <th nzWidth="100px">单位</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data; let i = index ;">
+        <td nzLeft="0px">{{i+1}}</td>
+        <td nzLeft="50px">{{item.materialName}}</td>
+        <td>{{item.hospitalMaterialCode}}</td>
+        <td>{{item.number}}</td>
+        <td>{{item.actualNumber}}</td>
+        <td>
+          <div class="editable-cell" *ngIf="!(item.barcodes&&item.barcodes.length>0)" >
+            <div class="editable-cell-text-wrapper">
+              <div class="editable-cell-text-wrapper">
+                <nz-input-number placeholder="实际数量" [disabled]="item.barcodes&&item.barcodes.length>0"
+                  [(ngModel)]="item.actualNumber" [nzMin]="0" [nzMax]="100000" [nzStep]="1"></nz-input-number>
+              </div>
+            </div>
+          </div>
+          <span *ngIf="item.barcodes&&item.barcodes.length>0">0</span>
+        </td>
+        <td>{{item.barcodes?item.barcodes.length:0}}
+          <button class="m-l-10" *ngIf="item.barcodes&&item.barcodes.length>0" (click)="showBarcodes(item)" nz-button
+            nzType="default" nzSize="small"><i nz-icon nzType="barcode" nzTheme="outline"></i></button>
+        </td>
+        <td>{{item.batchNo}}</td>
+        <td>{{item.expiryDate | date:'yyyy-MM-dd'}}</td>
+        <td>{{item.specification}}</td>
+        <td>{{item.unitName}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-card>
+
+<app-material-scan #materialScanModal (modalSave)="scanConfirm($event)"></app-material-scan>
+<app-material-barcodes #materialBarcodes (modalSave)="barcodesConfirm($event)"></app-material-barcodes>
+<nz-modal [(nzVisible)]="isVisible" nzWidth="80%" [nzTitle]="modalTitle" [nzContent]="modalContent"
+  (nzOnCancel)="handleCancel()" (nzOnOk)="handleCancel()">
+  <ng-template #modalTitle>
+    扫码盘点未录入信息
+  </ng-template>
+  <ng-template #modalContent>
+
+    <div style="min-height: 400px;">
+
+
+      <nz-table class="small-table" #infoTable [nzLoading]="loading" nzBordered [nzData]="errorInfos"
+        nzHideOnSinglePage="true">
+        <thead>
+          <tr>
+            <th nzWidth="60px">序</th>
+            <th nzWidth="280px">物料名称</th>
+            <th>院内码</th>
+            <th>条码号</th>
+            <th>错误原因</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of infoTable.data;let i = index;">
+            <td nzLeft="0px">{{i+1}}</td>
+            <td nzLeft="60px">{{item.materialName}}</td>
+            <td>{{item.hospitalMaterialCode}}</td>
+            <td>{{item.barcode}}</td>
+            <td>{{item.message}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </ng-template>
+</nz-modal>

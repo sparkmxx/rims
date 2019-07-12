@@ -1,0 +1,246 @@
+<nz-card class="ch-tab">
+  <div class="search-list">
+    <div class="row custom-form">
+      <div class="col-xs-4 col-lg-3 ">
+        <button class="m-r-20" nz-button nzType="default" (click)="complete()">完成</button>
+        <button class="m-r-20" nz-button nzType="default" (click)="back()">返回</button>
+      </div>
+    </div>
+  </div>
+  <nz-card class="m-t-20">
+    <h5 class="font-darkblue txt-c font-bold">上海市中科润达性能验证——试剂批号间对比报告(<input nz-input placeholder="请输入申请项目"
+        [(ngModel)]="input.applyItem" style="width:180px;" />)</h5>
+    <div class="row  m-t-10">
+      <div class="col-xs-2 font-bold txt-r">一. 概要</div>
+      <div class="col-xs-9">
+        <textarea rows="4" nz-input [(ngModel)]="input.summary"></textarea>
+      </div>
+    </div>
+    <div class="row m-t-10">
+
+      <div class="col-xs-2 font-bold txt-r">二. 选择仪器</div>
+      <div class="col-xs-9">
+        <div class="form-group">
+          <nz-select style="width:100%" [(ngModel)]="input.instrumentId" nzAllowClear nzPlaceHolder="所属仪器">
+            <nz-option *ngFor="let option of instruments" [nzValue]="option.value" [nzLabel]="option.name">
+            </nz-option>
+          </nz-select>
+
+        </div>
+      </div>
+    </div>
+    <div class="row  m-t-10">
+      <div class="col-xs-2 font-bold txt-r">三. 报告项目</div>
+      <div class="col-xs-9">
+        <nz-table class="m-t-20 small-table" #reportInspectItems [nzData]="input.qualifiedVerifyReportInspectItems"
+          [nzFrontPagination]=false [nzLoading]="loading" nzHideOnSinglePage="true">
+          <thead>
+            <tr>
+              <th>项目名称</th>
+              <th *ngFor="let item of reportInspectItems.data; let i = index ;">{{item.name}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>允许偏差（%）</td>
+              <td *ngFor="let item of reportInspectItems.data; let i = index ;">{{item.deviation}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+    <div class="row m-t-10">
+      <div class="col-xs-2 font-bold txt-r">四. 试剂列表</div>
+      <div class="col-xs-9">
+
+        <nz-table class="m-t-20 small-table" #regentList [nzData]="input.qualifiedVerifyReportInspectItems"
+          [nzFrontPagination]=false [nzLoading]="loading" nzHideOnSinglePage="true">
+          <thead>
+            <tr>
+              <th>项目名称</th>
+              <th>试剂名称</th>
+              <th>试剂院内码</th>
+              <th>旧批号</th>
+              <th>新批号</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-template ngFor let-item [ngForOf]="regentList.data" let-i="index">
+              <tr *ngFor="let material of item.qualifiedVerifyReportMaterials; let matIndex = index ;">
+                <td *ngIf="matIndex===0" [attr.rowspan]="item.qualifiedVerifyReportMaterials.length">{{item.name}}</td>
+                <td>{{material.materialName}}</td>
+                <td>{{material.hospitalMaterialCode}}</td>
+                <td>
+                  <input nz-input placeholder="新批号" [(ngModel)]="material.oldBatchNo" />
+                </td>
+                <td>
+                  <input nz-input placeholder="旧批号" [(ngModel)]="material.newBatchNo" />
+                </td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </nz-table>
+
+      </div>
+    </div>
+    <div class="row m-t-10">
+      <div class="col-xs-2 font-bold txt-r">五. 判定标准</div>
+      <div class="col-xs-9">
+        <nz-input-number [(ngModel)]="input.verificationStandardValue" [nzMin]="0" [nzMax]="100000" [nzStep]="1">
+        </nz-input-number>%比对结果为<span class="font-green font-bold">通过</span>,结果为<span
+          class="font-red font-bold">合格</span>
+      </div>
+    </div>
+    <h5 class=" font-bold">六. 检测数据及结果</h5>
+    <div *ngFor="let item of input.qualifiedVerifyReportInspectItems">
+      <div class="row p-10 bg-white">
+        <div class="col-xs-6 font-bold font-darkblue">{{item.name}}</div>
+        <div class="col-xs-6 txt-r"><button class="btn btn-xs btn-success" (click)="addTestResultsModel(item)"><i
+              class="ace-icon fa fa-plus"></i>
+            新增
+          </button></div>
+      </div>
+      <div class="bg-white p-h-10 p-b-10">
+        <nz-table nzBordered="true" class="m-t-20 md-table" [nzData]="item.performanceVerificationReportTestResults"
+          #reportInspectItems [nzFrontPagination]=false nzHideOnSinglePage="true">
+          <thead>
+            <tr>
+              <th rowspan="2" class="vertical-m font-bold">序号</th>
+              <th rowspan="2" class="vertical-m font-bold">检测日期</th>
+              <th
+                [attr.colspan]="item.performanceVerificationType===enumObject.PerformanceVerificationType.NegativePositive?3:2">
+                <div *ngFor="let material of item.qualifiedVerifyReportMaterials">旧批号:<span
+                    class="font-bold font-darkblue m-l-10">{{material.oldBatchNo}}</span></div>
+              </th>
+              <th
+                [attr.colspan]="item.performanceVerificationType===enumObject.PerformanceVerificationType.NegativePositive?3:2">
+                <div *ngFor="let material of item.qualifiedVerifyReportMaterials">新批号:<span
+                    class="font-bold font-darkblue m-l-10">{{material.newBatchNo}}</span></div>
+              </th>
+              <th rowspan="2" class="vertical-m font-bold"
+                *ngIf="item.performanceVerificationType===enumObject.PerformanceVerificationType.NegativePositive">参考结果
+              </th>
+              <th rowspan="2" class="vertical-m font-bold">实际偏差</th>
+              <th rowspan="2" class="vertical-m font-bold">偏差值</th>
+              <th rowspan="2" class="vertical-m font-bold">参考区间</th>
+              <th rowspan="2" class="vertical-m font-bold">比对结果</th>
+              <th rowspan="2" class="vertical-m font-bold">操作</th>
+            </tr>
+            <tr>
+              <th class="vertical-m font-bold">标本号</th>
+              <th class="vertical-m font-bold">检测值</th>
+              <th class="vertical-m font-bold"
+                *ngIf="item.performanceVerificationType===enumObject.PerformanceVerificationType.NegativePositive">结果
+              </th>
+              <th class="vertical-m font-bold">标本号</th>
+              <th class="vertical-m font-bold">检测值</th>
+              <th class="vertical-m font-bold"
+                *ngIf="item.performanceVerificationType===enumObject.PerformanceVerificationType.NegativePositive">结果
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let result of item.performanceVerificationReportTestResults;let i=index">
+              <td>{{i+1}}</td>
+              <td>
+                <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="result.testDate">
+                </nz-date-picker>
+              </td>
+              <td>
+                <input nz-input placeholder="标本号" [(ngModel)]="result.oldBatchNoSampleNo"
+                  (ngModelChange)="calculateResult(result,item)" />
+              </td>
+              <td>
+
+                <nz-input-number (ngModelChange)="calculateResult(result,item)"
+                  [(ngModel)]="result.oldBatchNoInspectValue" placeholder="检测值" [nzMin]="0" [nzMax]="100000"
+                  [nzStep]="1"></nz-input-number>
+
+              </td>
+              <td *ngIf="item.performanceVerificationType===enumObject.PerformanceVerificationType.NegativePositive">
+              </td>
+              <td>
+                <input nz-input placeholder="标本号" [(ngModel)]="result.newBatchNoSampleNo"
+                  (ngModelChange)="calculateResult(result,item)" />
+              </td>
+              <td>
+                <nz-input-number [(ngModel)]="result.newBatchNoInspectValue"
+                  (ngModelChange)="calculateResult(result,item)" placeholder="检测值" [nzMin]="0" [nzMax]="100000"
+                  [nzStep]="1"></nz-input-number>
+              </td>
+              <td *ngIf="item.performanceVerificationType===enumObject.PerformanceVerificationType.NegativePositive">
+
+              </td>
+              <td *ngIf="item.performanceVerificationType===enumObject.PerformanceVerificationType.NegativePositive">
+                {{item.referenceResult}}
+              </td>
+              <td>{{result.deviationValue}}</td>
+              <td>{{item.deviation}}</td>
+              <td>{{item.minReferenceRange}}~{{item.maxReferenceRange}} {{item.s}}</td>
+              <td>{{result.inspectResultType | enumType:'InspectResultType'}} </td>
+              <td><button nz-button nzSize="small" nzShape="circle" nzType="default"
+                (click)="deleteResultItem(item,result)"><i nz-icon type="minus" theme="outline"></i>
+              </button></td>
+            </tr>
+          </tbody>
+        </nz-table>
+        <div class="p-10">
+          结论:
+          <span class="m-r-10" *ngFor="let material of item.qualifiedVerifyReportMaterials">
+            试剂<span class="font-bold font-darkblue m-l-10">{{material.materialName}}</span>
+            旧批号:<span class="font-bold font-green m-l-10">{{material.oldBatchNo}}</span>
+            与新批号:<span class="font-bold font-green m-l-10">{{material.newBatchNo}}</span>
+          </span>
+          <div>比对，经验证结论为<span
+              class="font-bold font-darkblue m-l-10">{{item.qualifiedVerifyResultType | enumType:'QualifiedVerifyResultType'}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h5 class=" font-bold">七. 验证结论列表</h5>
+    <div class="p-10 bg-white">
+      <nz-table nzBordered="true" class="m-t-20 md-table" [nzData]="input.qualifiedVerifyReportInspectItems" #resultList
+        [nzFrontPagination]=false nzHideOnSinglePage="true">
+        <thead>
+          <tr>
+            <th class="vertical-m font-bold">检验项目</th>
+            <th class="vertical-m font-bold">试剂</th>
+            <th class="vertical-m font-bold">结论</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of resultList.data">
+            <td>{{item.name}}</td>
+            <td>
+              <div *ngFor="let result of item.qualifiedVerifyReportMaterials">
+                名称：<span class="font-bold font-darkblue m-r-10">{{result.materialName}}</span>
+                旧批号：<span class="font-bold font-darkblue m-r-10">{{result.oldBatchNo}}</span>
+                新批号：<span class="font-bold font-darkblue m-r-10">{{result.newBatchNo}}</span>
+              </div>
+            </td>
+            <td>{{item.qualifiedVerifyResultType  | enumType:'QualifiedVerifyResultType'}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+      <div class="row  m-t-10">
+        <div class="col-xs-2 font-bold txt-r">评价人：</div>
+        <div class="col-xs-9">
+          {{user}}
+        </div>
+      </div>
+      <div class="row  m-t-10">
+        <div class="col-xs-2 font-bold txt-r">审核人：</div>
+        <div class="col-xs-4">
+          <input nz-input placeholder="审核人：" [(ngModel)]="input.checkerAccount" />
+        </div>
+      </div>
+      <div class="row  m-t-10">
+        <div class="col-xs-2 font-bold txt-r">评价日期：</div>
+        <div class="col-xs-4">
+          <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="input.checkTime">
+          </nz-date-picker>
+        </div>
+      </div>
+    </div>
+  </nz-card>
+</nz-card>

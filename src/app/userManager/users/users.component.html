@@ -1,0 +1,76 @@
+<nz-card class="ch-tab"><div class="search-list">
+    <div class="row custom-form">
+        <div class="col-xs-4 col-lg-3">
+            <div class="form-group">
+                <input nz-input placeholder="用户名" [(ngModel)]="filter"  (keypress)="keypress($event)">
+            </div>
+        </div>
+
+        <div class="col-xs-6 col-lg-5 ">
+            <button nz-button nzType="default" (click)="refresh()"><i nz-icon type="search" theme="outline"></i>查询</button>
+            &nbsp;
+            <button nz-button nzType="default" (click)="createUser()"><i nz-icon type="plus-circle" theme="outline"></i>新增</button>
+        </div>
+    </div>
+</div>
+<nz-table #nzTable  [nzData]="users" [nzFrontPagination]=false nzShowSizeChanger [nzLoading]="loading" [(nzPageSize)]=pageSize
+[(nzPageIndex)]=pageNumber [nzTotal]=totalItems (nzPageSizeChange)="refresh(true)" (nzPageIndexChange)="refresh()">
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+      <tr>
+        <th>操作</th>
+        <th nzShowSort nzSortKey="age">用户名</th>
+        <th>名字</th>
+        <th nzShowFilter [nzFilters]="filterRoleArray" (nzFilterChange)="filterRoleChange($event)">角色</th>
+        <th>组织</th>
+        <th>邮箱</th>
+        <th>激活</th>
+        <th>上次登录时间</th>
+        <th>创建时间</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data">
+          <td>
+              <div class="editable-row-operations">
+                  <nz-dropdown>
+                      <button nz-button nzSize="small" nz-dropdown>操作<i nz-icon type="down"></i></button>
+                      <ul nz-menu>
+                          <li nz-menu-item (click)="editUser(item)">
+                              <a>修改</a>
+                          </li>
+                          <li nz-menu-item (click)="open(item)">
+                            <a>权限</a>
+                        </li>
+                          <li nz-menu-item (click)="delete(item)">
+                              <a>删除</a>
+                          </li>
+                      </ul>
+                  </nz-dropdown>
+
+              </div>
+          </td>
+        <td>{{item.userName}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.roles | join:'roleName'}}</td>
+        <!-- <td></td>{{item.roles[0].roleName}} -->
+        <td>{{item.organizationUnitName}}</td>
+        <td>{{item.emailAddress}}</td>
+        <td>{{item.isActive|formatBoolean}}</td>
+        <td>{{item.lastLoginTime| date:'yyyy-MM-dd hh-mm-ss'}}</td>
+        <td>{{item.creationTime| date:'yyyy-MM-dd hh-mm-ss'}}</td>
+
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-card>
+  <app-users-edit #userEditDrawer (modalSave)="refresh()"></app-users-edit>
+
+  <nz-drawer [nzVisible]="visible" nzPlacement="right" nzTitle="角色权限分配" (nzOnClose)="close()" [nzWidth]="720">
+    <nz-spin nzSimple *ngIf="treeLoading"></nz-spin>
+    <nz-tree #nzTreeComponent [nzData]="permissionTreeNodes" nzCheckable="true" nzMultiple="true"
+        [nzCheckedKeys]="defaultCheckedKeys" [nzExpandAll]="true"  > </nz-tree>
+    <div class="drawer-footer">
+        <button type="button" (click)="close()" class="ant-btn" style="margin-right: 8px;"><span>取消</span></button>
+        <button type="button" (click)="save()" class="ant-btn ant-btn-primary"><span>确认</span></button>
+    </div>
+</nz-drawer>

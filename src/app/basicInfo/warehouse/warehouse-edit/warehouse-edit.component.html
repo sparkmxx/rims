@@ -1,0 +1,60 @@
+<nz-drawer [nzVisible]="visible" nzPlacement="right" nzTitle="仓库" (nzOnClose)="close()" [nzWidth]="720">
+
+  <nz-tabset>
+    <nz-tab nzTitle="库位信息">
+      <form nz-form [formGroup]="validateForm">
+        <nz-form-item nzFlex>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="warehouseGradeType">等级</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-select formControlName="warehouseGradeType" [(ngModel)]="saveDto.warehouseGradeType" nzAllowClear nzPlaceHolder="等级">
+              <nz-option *ngFor="let option of enumArray.WarehouseGradeType" [nzValue]="option.value"
+                [nzLabel]="option.description"></nz-option>
+            </nz-select>
+            <nz-form-explain *ngIf="validateForm.get('warehouseGradeType').dirty && validateForm.get('warehouseGradeType').errors">
+              请选择 厂商类型
+            </nz-form-explain>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nzFlex>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">名称</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input formControlName="name" placeholder="名称" name="name" [(ngModel)]="saveDto.name">
+            <nz-form-explain *ngIf="validateForm.get('name').dirty && validateForm.get('name').errors">
+              请填写名称
+            </nz-form-explain>
+          </nz-form-control>
+        </nz-form-item>
+        <!-- <nz-form-item nzFlex>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">名称</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-tree-select style="width:100%;" formControlName="organizationUnitIds" name="organizationUnitIds"
+                [nzNodes]="treeNodes" nzShowSearch nzPlaceHolder="所属部门" [(ngModel)]="defaultCheckedKeys"
+                [nzDefaultExpandAll]="true" [nzMaxTagCount]="3" 
+                [nzAllowClear]="false" [nzMultiple]="true">
+              </nz-tree-select>
+              <nz-form-explain *ngIf="validateForm.get('name').dirty && validateForm.get('name').errors">
+                请填写名称
+              </nz-form-explain>
+            </nz-form-control>
+          </nz-form-item> -->
+
+       
+      </form>
+    </nz-tab>
+    <nz-tab nzTitle="关联组织">
+      <div class="row">
+        <nz-tree #nzTreeComponent [nzData]="treeNodes"  
+         [nzMultiple]="true"
+         [nzSelectedKeys]="defaultCheckedKeys" [nzExpandAll]="true" > </nz-tree>
+      </div>
+    </nz-tab>
+
+  </nz-tabset>
+
+  <div class="drawer-footer">
+    <button type="button" (click)="close()" class="ant-btn" style="margin-right: 8px;"><span>取消</span></button>
+    <button type="button" (click)="saveUser()" class="ant-btn ant-btn-primary"><span>确认</span></button>
+  </div>
+</nz-drawer>
+<!-- 
+[disabled]="!validateForm.valid" -->

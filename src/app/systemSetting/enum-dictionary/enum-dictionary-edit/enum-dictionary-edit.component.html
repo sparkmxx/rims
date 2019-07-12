@@ -1,0 +1,89 @@
+<nz-modal [(nzVisible)]="isVisible" nzWidth="80%" [nzTitle]="modalTitle" [nzContent]="modalContent"
+          [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+    <ng-template #modalTitle>
+        添加枚举字典
+    </ng-template>
+
+    <ng-template #modalContent>
+        <div>
+                <div nz-row [nzGutter]="24">
+
+                    <div nz-col [nzSpan]="8" *ngIf="!enum.id">
+                        <nz-select  style="width: 160px;"
+                                   [(ngModel)]="selectEnum" nzAllowClear nzPlaceHolder="枚举"
+                                   (ngModelChange)="selectChange()"
+                        >
+                            <nz-option *ngFor="let option of enums" [nzValue]="option"
+                                       [nzLabel]="option.name"></nz-option>
+                        </nz-select>
+                    </div>
+                    <h3 *ngIf="enum.id">
+                        {{enum.name}}
+                    </h3>
+                </div>
+
+            <div class="m-t-20">
+                <nz-table #nzTabel [nzData]="enum.enumDescriptionItems" nzHideOnSinglePage="true"
+                          [nzPageSize]="50"
+                          nzBordered
+                          [nzScroll]="{ y: '310px' }">
+                    <thead>
+                    <tr>
+                        <th nzWidth="80px">序</th>
+                        <th nzWidth="220px">编码</th>
+                        <th nzWidth="220px">值</th>
+                        <th >描述</th>
+                        <th nzWidth="220px">排序</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr *ngFor="let item of nzTabel.data;let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>
+                            <div class="editable-cell">
+                                <div class="editable-cell-text-wrapper">
+                                    {{item.key}}
+                                </div>
+                            </div>
+
+                        </td>
+                        <td>
+                            <div class="editable-cell">
+                                <div class="editable-cell-text-wrapper">
+                                    {{item.value}}
+                                </div>
+                            </div>
+
+                        </td>
+                        <td>
+                            <div class="editable-cell">
+                                <div class="editable-cell-text-wrapper">
+                                    <input nz-input  placeholder="描述"  [(ngModel)]="item.description">
+                                </div>
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editable-cell">
+                                <div class="editable-cell-text-wrapper">
+                                    <nz-input-number placeholder="排序" [(ngModel)]="item.sortRank" [nzMin]="1" [nzMax]="1000" [nzStep]="1"></nz-input-number>
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </nz-table>
+
+            </div>
+
+        </div>
+    </ng-template>
+    <ng-template #modalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">取消</button>
+        <button nz-button nzType="primary" (click)="save()"
+                [nzLoading]="isConfirmLoading">保存
+        </button>
+    </ng-template>
+</nz-modal>

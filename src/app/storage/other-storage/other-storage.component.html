@@ -1,0 +1,294 @@
+<nz-card class="ch-tab">
+    <div class="banner-changer">
+        <app-banner-column-changer></app-banner-column-changer>
+    </div>
+  <div nz-row>
+    <div nz-col [nzSpan]="webSettings.bannerLeft">
+      
+      <div class="left-banner">
+        <div nz-form nzLayout="vertical" class="vertical-form">
+          <app-query-condition [queryDTO]="queryDTO"></app-query-condition>
+        </div>
+        <div class="m-b-20" nz-row>
+          <div nz-col nzSpan="16">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+              <input type="text" nz-input placeholder="请输入名称，编码..." [(ngModel)]="queryDTO.filter"
+                (keypress)="keypress($event)" formCotrolName="filter" />
+            </nz-input-group>
+            <ng-template #suffixIconButton>
+              <button nz-button nzType="primary" nzSearch (click)="refresh()"><i nz-icon type="search"></i></button>
+            </ng-template>
+          </div>
+          <div class="p-l-20" nz-col nzSpan="8">
+            <button nz-button nzType="default" (click)="confirmAdd()">添加</button>
+          </div>
+        </div>
+        <nz-table class="small-table" #virtualTable nzVirtualScroll [nzVirtualItemSize]="54" [nzData]="listOfData"
+          [nzFrontPagination]="false" [nzLoading]="isTableLoading" [nzShowPagination]="false"
+          [nzScroll]="{ x: '700px', y: '380px' }">
+          <thead>
+            <tr>
+              <th nzWidth="50px" nzLeft="0px" nzShowCheckbox (nzCheckedChange)="checkAll($event)">
+              </th>
+              <th nzWidth="40px" nzLeft="50px">序</th>
+              <th nzWidth="100px" nzLeft="90px">名称</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="shortName">简称</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="brandName">品牌</th>
+
+              <th nzWidth="100px" nzShowSort nzSortKey="vendorMaterialCode">厂商码</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="materialTypeName">类型</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="methodologyName">方法学</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="specification">规格</th>
+
+              <th nzWidth="100px" nzShowSort nzSortKey="storageConditionName">存储条件</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="temperatureRangeName">温度范围</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="price">采购单价</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="isEnableOpenLabel">开瓶标贴</th>
+
+              <th nzWidth="100px" nzShowSort nzSortKey="organizationName">所属部门</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="instrumentName">所属仪器</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="supplierName">供应商</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="manufacturerName">生产厂商</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <ng-template nz-virtual-scroll let-data let-index="index">
+              <tr>
+                <td nzLeft="0px" nzShowCheckbox [(nzChecked)]="mapOfCheckedId[data.id]"></td>
+                <td nzLeft="50px">{{index+1}}</td>
+                <td nzLeft="90px">{{ data.name }}</td>
+                <td>{{data.shortName}}</td>
+                <td>{{data.brandName}}</td>
+
+                <td>{{data.vendorMaterialCode}}</td>
+                <td>{{data.materialTypeName}}</td>
+                <td>{{data.methodologyName}}</td>
+                <td>{{data.specification}}</td>
+
+                <td>{{data.storageConditionName}}</td>
+                <td>{{data.temperatureRangeName}}</td>
+                <td>{{data.price}}</td>
+                <td>{{data.isEnableOpenLabel | formatBoolean}}</td>
+
+
+                <td>{{data.organizationName}}</td>
+                <td>{{data.instrumentName}}</td>
+                <td>{{data.manufacturerName}}</td>
+                <td>{{data.supplierName}}</td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+    <div nz-col [nzSpan]="webSettings.bannerRight">
+      <div class="m-b-10">
+        <button class="m-r-20" nz-button nzType="primary" (click)="storage()">入库</button>
+        
+        <button class="m-r-20" nz-button nzType="default" (click)="showScan()">扫码入库</button>
+        
+        <button class="m-r-20" nz-button nzType="default" (click)="clear()">清空</button>
+        <button  nz-button nzType="default" (click)="toggleWrite()">批量填写 <i nz-icon [nzType]="batchState?'up':'down'" nzTheme="outline"></i></button>
+      </div>
+      <nz-card *ngIf="batchState" class="small-form">
+        <div class="m-b-10" nz-form>
+          <div nz-row [nzGutter]="24">
+            <div nz-col [nzSpan]="8">
+              <nz-form-item >
+                <nz-form-label [nzSm]="8" [nzXs]="24"  >交货单号</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                  <input nz-input  placeholder="交货单号" name="deliveryOrderNo"
+                    [(ngModel)]="storageBatchWriteDTO.deliveryOrderNo">
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="8">
+              <nz-form-item >
+                <nz-form-label [nzSm]="8" [nzXs]="24"  >发票号</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                  <input nz-input  placeholder="发票号" name="invoiceNo"
+                    [(ngModel)]="storageBatchWriteDTO.invoiceNo">
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="8">
+              <nz-form-item >
+                <nz-form-label [nzSm]="8" [nzXs]="24">验收温度</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                  <input nz-input  placeholder="验收温度" name="temperature"
+                    [(ngModel)]="storageBatchWriteDTO.temperature">
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="8">
+              <nz-form-item >
+                <nz-form-label [nzSm]="8" [nzXs]="24"  >包装完整</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                  <nz-switch [(ngModel)]="storageBatchWriteDTO.isPackageComplete">
+                  </nz-switch>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="8">
+              <nz-form-item >
+                <nz-form-label [nzSm]="8" [nzXs]="24"  >发票同行</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                  <nz-switch [(ngModel)]="storageBatchWriteDTO.isMaterialWithTicket">
+                  </nz-switch>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="8">
+              <nz-form-item >
+               
+                <nz-form-control >
+                  <button class="m-r-20" nz-button nzType="default" (click)="cancelWrite()">取消</button>
+                  <button  nz-button nzType="primary" (click)="confirmWrite()">确认</button>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+        </div>
+      </nz-card>
+      <nz-table class="small-table" #applyTable [nzData]="applys" [nzFrontPagination]="false" [nzLoading]="loading"
+        [nzShowPagination]="false" [nzScroll]="{ x: '1430px', y: '640px' }">
+        <thead>
+          <tr>
+            <th nzWidth="50px" nzLeft="0px">序</th>
+            <th nzWidth="220px" nzLeft="50px">名称</th>
+            <th nzWidth="100px">院内码</th>
+            <th nzWidth="150px" nzShowSort nzSortKey="batchNo">批号</th>
+            <th nzWidth="200px" nzShowSort nzSortKey="expiryDate">效期</th>
+            <th nzWidth="120px" nzShowSort nzSortKey="actualNumber">实际数量</th>
+            <th nzWidth="150px" nzShowSort nzSortKey="actualNumber">交货单号</th>
+            <th nzWidth="200px" nzShowSort nzSortKey="actualNumber">交货日期</th>
+            <th nzWidth="120px" nzShowSort nzSortKey="actualNumber">交货数量</th>
+            <th nzWidth="120px" nzShowSort nzSortKey="actualNumber">发票号</th>
+            <th nzWidth="150px" nzShowSort nzSortKey="temperature">验收温度</th>
+            <th nzWidth="150px" nzShowSort nzSortKey="ppCertificateFilePath">pp证书路径</th>
+            <th nzWidth="150px" nzShowSort nzSortKey="isPackageComplete">包装完整</th>
+            <th nzWidth="150px" nzShowSort nzSortKey="isMaterialWithTicket">货票同行</th>
+            <th nzWidth="60px" nzRight="0px">删除</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of applyTable.data;let i = index;">
+            <td nzLeft="0px">{{i+1}}</td>
+            <td nzLeft="50px">{{item.name}}</td>
+            <td>{{item.hospitalMaterialCode}}</td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <div class="editable-cell-text-wrapper">
+                    <input nz-input placeholder="批号" name="batchNo" [(ngModel)]="item.batchNo">
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-row-operations">
+                <nz-date-picker nzFormat="yyyy-MM-dd" [(ngModel)]="item.expiryDate">
+                </nz-date-picker>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <nz-input-number placeholder="实际数量" [(ngModel)]="item.actualNumber" [nzMin]="0" [nzMax]="100000"
+                    [nzStep]="1">
+                  </nz-input-number>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <div class="editable-cell-text-wrapper">
+                    <input nz-input placeholder="交货单号" name="deliveryOrderNo" [(ngModel)]="item.deliveryOrderNo">
+                  </div>
+                </div>
+              </div>
+            </td>
+    
+           
+            <td>
+              <div class="editable-row-operations">
+                <nz-date-picker nzFormat="yyyy-MM-dd" [(ngModel)]="item.deliveryDate">
+                </nz-date-picker>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <nz-input-number placeholder="交货数量" [(ngModel)]="item.deliveryNumber" [nzMin]="0" [nzMax]="100000"
+                    [nzStep]="1">
+                  </nz-input-number>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <div class="editable-cell-text-wrapper">
+                    <input nz-input  placeholder="发票号" name="invoiceNo"
+                    [(ngModel)]="item.invoiceNo">
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <div class="editable-cell-text-wrapper">
+                    <input nz-input placeholder="验收温度" name="temperature" [(ngModel)]="item.temperature">
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <div class="editable-cell-text-wrapper">
+                    <input nz-input placeholder="pp证书路径" name="ppCertificateFilePath"
+                      [(ngModel)]="item.ppCertificateFilePath">
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <div class="editable-cell-text-wrapper">
+                    <nz-switch [(ngModel)]="item.isPackageComplete">
+                    </nz-switch>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <div class="editable-cell-text-wrapper">
+                    <nz-switch [(ngModel)]="item.isMaterialWithTicket">
+                    </nz-switch>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td nzRight="0px">
+              <div class="editable-row-operations">
+                <button nz-button nzSize="small" nzShape="circle" nzType="default" (click)="deleteDetail(item)"><i
+                    nz-icon type="minus" theme="outline"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+
+    </div>
+  </div>
+</nz-card>
+
+<app-material-scan #materialScanModal (modalSave)="scanConfirm($event)"></app-material-scan>

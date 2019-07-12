@@ -1,0 +1,105 @@
+<nz-card class="ch-tab">
+  <div class="search-list m-b-15">
+    <div class="row custom-form">
+      <div class="col-xs-6 col-lg-5 ">
+        <button class="m-r-20" nz-button nzType="default" (click)="list()"><i nz-icon type="reload"
+            theme="outline"></i>刷新</button>
+
+        <button class="m-r-20" nz-button nzType="default" (click)="createOrganizationUnit()"><i nz-icon
+            type="plus-circle" theme="outline"></i>新增</button>
+        <div style="float:right;">
+          <button class="m-r-10" nz-button nzType="default" (click)="addOrganizationUnitUsers()"><i nz-icon type="plus-circle"
+              theme="outline"></i>添加用户</button>
+          <button style="float:right;" nz-button nzType="default" (click)="organizationWareHouseSetting()">
+            <i nz-icon nzType="setting" nzTheme="outline"></i>出入库设置</button>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6">
+      <nz-table #nzTable [nzData]="data" [nzLoading]="loading">
+        <thead>
+          <tr>
+
+            <th nzWidth="40%">名称</th>
+            <th nzWidth="40%">创建时间</th>
+            <th nzWidth="10%">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-template ngFor let-data [ngForOf]="nzTable.data">
+            <ng-template ngFor let-item [ngForOf]="expandDataCache[data.id]">
+              <tr *ngIf="(item.parent&&item.parent.expand)||!(item.parent)" (click)="selectOrganization(item)"
+                [ngClass]="{'select':item===selectedRow}">
+                <td [nzIndentSize]="item.level*20" [nzShowExpand]="item.children&&item.children.length>0" [(nzExpand)]="item.expand"
+                  (nzExpandChange)="collapse(expandDataCache[data.key],item,$event)">
+                  {{item.displayName}}
+                </td>
+                <td>{{item.creationTime| date:'yyyy-MM-dd hh-mm-ss'}}</td>
+                <td>
+                  <div class="editable-row-operations">
+                    <nz-dropdown>
+                      <button nz-button nzSize="small" nz-dropdown>操作<i nz-icon type="down"></i></button>
+                      <ul nz-menu>
+                        <li nz-menu-item (click)="editOrganizationUnit(item)">
+                          <a>修改</a>
+                        </li>
+                        <li nz-menu-item (click)="delete(item)">
+                          <a>删除</a>
+                        </li>
+                      </ul>
+                    </nz-dropdown>
+
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </ng-template>
+        </tbody>
+      </nz-table>
+    </div>
+    <div class="col-xs-6">
+      <nz-table #nzUsersTable [nzData]="organizationUsers" [nzFrontPagination]=false nzShowSizeChanger
+        [nzLoading]="organizationUsersLoading" [(nzPageSize)]=pageSize [(nzPageIndex)]=pageNumber [nzTotal]=totalItems
+        (nzPageSizeChange)="getOrganizationUnitUsers()" (nzPageIndexChange)="getOrganizationUnitUsers()">
+        <thead>
+          <tr>
+            <th>操作</th>
+            <th>用户名</th>
+            <th>名称</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of nzUsersTable.data">
+            <td>
+              <div class="editable-row-operations">
+                <nz-dropdown>
+                  <button nz-button nzSize="small" nz-dropdown>操作<i nz-icon type="down"></i></button>
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="removeUser(item)">
+                      <a>删除</a>
+                    </li>
+                  </ul>
+                </nz-dropdown>
+
+              </div>
+            </td>
+            <td>{{item.userName}}</td>
+            <td>{{item.name}}</td>
+
+          </tr>
+        </tbody>
+      </nz-table>
+
+    </div>
+  </div>
+
+</nz-card>
+
+<app-organization-units-edit #organizationUnitsEditModal (modalSave)="refresh()"></app-organization-units-edit>
+<app-organization-units-users #organizationUnitsUserModal (modalSave)="getOrganizationUnitUsers()">
+</app-organization-units-users>
+<app-organization-units-setting #organizationUnitsSettingModal ></app-organization-units-setting>

@@ -1,0 +1,68 @@
+<nz-card class="ch-tab">
+  <div class="search-list">
+    <div class="row custom-form">
+        <div class="col-xs-4 col-lg-3">
+            <div class="form-group">
+                <input nz-input placeholder="名称" [(ngModel)]="filter" (keypress)="keypress($event)">
+            </div>
+        </div>
+
+        <div class="col-xs-4 col-lg-3 ">
+            <button nz-button nzType="default" (click)="refresh()"><i nz-icon type="search" theme="outline"></i>查询</button>
+            &nbsp;
+            <button nz-button nzType="default" (click)="edit()"><i nz-icon type="plus-circle" theme="outline"></i>新增</button>
+        </div>
+    </div>
+</div>
+
+  <nz-table class="m-t-20 md-table" #nzTable [nzData]="data" [nzFrontPagination]=false nzShowSizeChanger [nzLoading]="loading" [(nzPageSize)]=pageSize
+            [(nzPageIndex)]=pageNumber [nzTotal]=totalItems (nzPageSizeChange)="refresh(true)" (nzPageIndexChange)="refresh()">
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+    <tr>
+      <th>操作</th>
+      <th>序</th>
+      <th nzShowSort nzSortKey="code">编码</th>
+      <th nzShowSort nzSortKey="name">名称</th>
+      <th nzShowSort nzSortKey="minReferenceRange">参考区间（最小）</th>
+      <th nzShowSort nzSortKey="maxReferenceRange">参考区间（最大）</th>
+      <th nzShowSort nzSortKey="referenceUnit">参考单位</th>
+      <th nzShowSort nzSortKey="calculationFormula">计算公式</th>
+      <th nzShowSort nzSortKey="deviation">偏差%</th>
+      <th nzShowSort nzSortKey="referenceResult">参考结果</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of nzTable.data; let i = index ;">
+      <td>
+          <div class="editable-row-operations">
+              <nz-dropdown>
+                <button nz-button nzSize="small" nz-dropdown>操作<i nz-icon type="down"></i></button>
+                <ul nz-menu>
+                  <li nz-menu-item (click)="edit(item.id)">
+                    <a>修改</a>
+                  </li>
+                  <li nz-menu-item (click)="delete(item)">
+                    <a>删除</a>
+                  </li>
+                </ul>
+              </nz-dropdown>
+
+            </div>
+      </td>
+      <td>{{i+1}}</td>
+      <td>{{item.code}}</td>
+      <td>{{item.name}}</td>
+      <td>{{item.minReferenceRange}}</td>
+      <td>{{item.maxReferenceRange}}</td>
+      <td>{{item.referenceUnit}}</td>
+      <td>{{item.calculationFormula}}</td>
+      <td>{{item.deviation}}</td>
+      <td>{{item.referenceResult | formatValueToName:{data:dicts,valueField:'value',nameField:'name'} }}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+
+</nz-card>
+
+<app-inspection-item-edit #inspectionItemEditModal (modalSave)="refresh()"></app-inspection-item-edit>

@@ -1,0 +1,60 @@
+<nz-drawer [nzVisible]="visible" nzPlacement="right" nzTitle="选择检验项目" (nzOnClose)="close()"
+[nzWidth]="850">
+<nz-card class="ch-tab">
+  <div class="search-list">
+    <div class="row custom-form">
+      <div class="col-xs-4 col-lg-3">
+        <div class="form-group">
+          <input nz-input placeholder="名称" [(ngModel)]="filter" (keypress)="keypress($event)">
+        </div>
+      </div>
+
+      <div class="col-xs-4 col-lg-3 ">
+        <button nz-button nzType="default" (click)="refresh()"><i nz-icon type="search"
+            theme="outline"></i>查询</button>
+      </div>
+    </div>
+  </div>
+
+  <nz-table class="m-t-20 small-table" #nzTable [nzData]="data" [nzFrontPagination]=false nzShowSizeChanger
+    [nzLoading]="isTableLoading" [(nzPageSize)]=pageSize [(nzPageIndex)]=pageNumber [nzTotal]=totalItems
+    (nzPageSizeChange)="refresh(true)" (nzPageIndexChange)="refresh()" [nzScroll]="{ y: '210px',x:'500px'}">
+    <thead (nzSortChange)="sort($event)" nzSingleSort >
+      <tr>
+        <th  nzShowCheckbox
+        [(nzChecked)]="isAllDisplayDataChecked"
+        (nzCheckedChange)="checkAll($event)">
+        </th>
+        <th>序</th>
+        <th nzShowSort nzSortKey="name" nzWidth="100px">名称</th>
+        <th nzShowSort nzSortKey="minReferenceRange" nzWidth="100px">参考区间（最小）</th>
+        <th nzShowSort nzSortKey="maxReferenceRange" nzWidth="100px">参考区间（最大）</th>
+        <th nzShowSort nzSortKey="referenceUnit" nzWidth="100px">参考单位</th>
+        <th nzShowSort nzSortKey="calculationFormula" nzWidth="100px">计算公式</th>
+        <th nzShowSort nzSortKey="deviation" nzWidth="100px">偏差%</th>
+        <th nzShowSort nzSortKey="referenceResult" nzWidth="100px">参考结果</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data; let i = index ;">
+          <td
+          nzShowCheckbox [(nzChecked)]="mapOfCheckedId[item.id]" (nzCheckedChange)="refreshStatus(item)"></td>
+        <td>{{i+1}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.minReferenceRange}}</td>
+        <td>{{item.maxReferenceRange}}</td>
+        <td>{{item.referenceUnit}}</td>
+        <td>{{item.calculationFormula}}</td>
+        <td>{{item.deviation}}</td>
+        <td>{{item.referenceResult  | formatValueToName:{data:dicts,valueField:'value',nameField:'name'} }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+</nz-card>
+<div class="drawer-footer">
+  <button type="button" (click)="close()" class="ant-btn" style="margin-right: 8px;"><span>取消</span></button>
+  <button type="button" (click)="save()" class="ant-btn ant-btn-primary"><span>确认</span></button>
+</div>
+</nz-drawer>

@@ -1,0 +1,180 @@
+<nz-card class="ch-tab">
+  <div class="search-list">
+    <div nz-form nzLayout="inline" class="m-b-20">
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24">起始</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="queryDTO.startDate"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24">结束</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="queryDTO.endDate"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <app-query-condition [queryDTO]="queryDTO"></app-query-condition>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-form-label [nzSm]="6" [nzXs]="24">字段</nz-form-label>
+          <nz-form-control [nzSm]="18" [nzXs]="24">
+            <input nz-input placeholder="关键字" [(ngModel)]="queryDTO.filter" (keypress)="keypress($event)"/>
+          </nz-form-control>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="default" (click)="refresh()"><i nz-icon type="search"
+              theme="outline"></i>查询</button>
+        </nz-form-control>
+
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="default" (click)="clearParam()"><i nz-icon type="undo"
+              theme="outline"></i>重置</button>
+        </nz-form-control>
+
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button  nz-button nzType="default" (click)="refresh()"><i nz-icon type="search"
+            theme="outline"></i>查询</button>
+        </nz-form-control>
+
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button  nz-button nzType="default" (click)="edit()"><i nz-icon type="plus-circle"
+            theme="outline"></i>新增</button>
+        </nz-form-control>
+
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button  nz-button nzType="default" (click)="download()"><i nz-icon type="download"
+            theme="outline"></i>下载</button>
+        </nz-form-control>
+
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control>
+          <nz-upload nzAction="{{remoteServiceBaseUrl}}/File/Upload" [nzShowUploadList]=false
+          (nzChange)="uploadComplete($event)">
+          <button nz-button>
+            <i nz-icon type="upload"></i><span>上传</span>
+          </button>
+        </nz-upload>
+        </nz-form-control>
+
+      </nz-form-item>
+
+
+    </div>
+  </div>
+
+  <nz-table class="m-t-20 small-table" #nzTable [nzData]="data" [nzFrontPagination]=false nzShowSizeChanger
+    [nzLoading]="loading" [(nzPageSize)]=pageSize [(nzPageIndex)]=pageNumber [nzTotal]=totalItems
+    (nzPageSizeChange)="refresh(true)" (nzPageIndexChange)="refresh()" [nzScroll]="{ x:'840px',y:'480px'}">
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+      <tr>
+        <th nzWidth="100px" nzLeft="0px">操作</th>
+        <th nzWidth="50px" nzLeft="100px">序</th>
+        <th nzWidth="130px" nzLeft="150px" nzShowSort nzSortKey="hospitalMaterialCode">院内码</th>
+        <th nzWidth="180px" nzLeft="250px" nzShowSort nzSortKey="name">名称</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="shortName">简称</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="brandName">品牌</th>
+
+        <th nzWidth="100px" nzShowSort nzSortKey="vendorMaterialCode">厂商码</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="materialTypeName">类型</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="methodologyName">方法学</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="specification">规格</th>
+
+        <th nzWidth="100px" nzShowSort nzSortKey="storageConditionName">存储条件</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="temperatureRangeName">温度范围</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="price">采购单价</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="isEnableOpenLabel">开瓶标贴</th>
+
+        <th nzWidth="150px" nzShowSort nzSortKey="organizationName">所属部门</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="instrumentName">所属仪器</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="supplierName">供应商</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="manufacturerName">生产厂商</th>
+
+        <th nzWidth="100px" nzShowSort nzSortKey="invoicingCompanyName">开票公司</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="deliveryCompanyName">发货公司</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="outBoxExpiryDate">开封效期</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="unitName">采购单位</th>
+
+        <th nzWidth="100px" nzShowSort nzSortKey="registrationCertificateNo">注册证号码</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="expiryDate">注册证有效期</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="isDisabled">物料停用</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="isPublicReagent">公共试剂</th>
+
+        <th nzWidth="100px" nzShowSort nzSortKey="isStopPurchase">停止采购</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="minUnitName">最小单位</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="combinationReagentProportion">是否组合试剂</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data; let i = index ;">
+        <td nzLeft="0px">
+          <div class="editable-row-operations">
+            <nz-dropdown>
+              <button nz-button nzSize="small" nz-dropdown>操作<i nz-icon type="down"></i></button>
+              <ul nz-menu>
+                <li nz-menu-item (click)="edit(item.id)">
+                  <a>修改</a>
+                </li>
+                <li nz-menu-item (click)="delete(item)">
+                  <a>删除</a>
+                </li>
+              </ul>
+            </nz-dropdown>
+
+          </div>
+        </td>
+        <td nzLeft="100px">{{i+1}}</td>
+        <td nzLeft="150px">{{item.hospitalMaterialCode}}</td>
+        <td nzLeft="250px">{{item.name}}</td>
+        <td>{{item.shortName}}</td>
+        <td>{{item.brandName}}</td>
+
+        <td>{{item.vendorMaterialCode}}</td>
+        <td>{{item.materialTypeName}}</td>
+        <td>{{item.methodologyName}}</td>
+        <td>{{item.specification}}</td>
+
+        <td>{{item.storageConditionName}}</td>
+        <td>{{item.temperatureRangeName}}</td>
+        <td>{{item.price}}</td>
+        <td>{{item.isEnableOpenLabel | formatBoolean}}</td>
+
+
+        <td>{{item.organizationMaterials  | join:'organizationName'}}</td>
+        <td>{{item.instrumentName}}</td>
+        <td>{{item.manufacturerName}}</td>
+        <td>{{item.supplierName}}</td>
+
+        <td>{{item.invoicingCompanyName}}</td>
+        <td>{{item.deliveryCompanyName}}</td>
+        <td>{{item.outBoxExpiryDate}}</td>
+        <td>{{item.unitName}}</td>
+
+        <td>{{item.registrationCertificateNo}}</td>
+        <td>{{item.expiryDate  | date:'yyyy-MM-dd'}}</td>
+        <td>{{item.isDisabled  | formatBoolean}}</td>
+        <td>{{item.isPublicReagent  | formatBoolean}}</td>
+
+        <td>{{item.isStopPurchase  | formatBoolean}}</td>
+        <td>{{item.minUnitName}}</td>
+        <td>{{item.isCombinationReagent | formatBoolean}}</td>
+
+      </tr>
+    </tbody>
+  </nz-table>
+
+</nz-card>
+
+<app-material-edit #materialEditModal (modalSave)="refresh()"></app-material-edit>

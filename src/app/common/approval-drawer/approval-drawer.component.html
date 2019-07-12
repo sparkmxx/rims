@@ -1,0 +1,50 @@
+<nz-drawer [nzVisible]="isVisible" nzPlacement="right" nzTitle="审批" (nzOnClose)="close()" [nzWidth]="720">
+
+  <div nz-form>
+    <nz-form-item nzFlex>
+      <nz-form-label [nzSm]="6" [nzXs]="24">审批结果</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-radio-group [(ngModel)]="saveDto.approvalResultState">
+          <label nz-radio [nzValue]="enumObject.ApprovalResultState.Agreement">同意</label>
+          <label nz-radio [nzValue]="enumObject.ApprovalResultState.Dismissed">驳回</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nzFlex>
+      <nz-form-label [nzSm]="6" [nzXs]="24">原因</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <textarea rows="4" nz-input [(ngModel)]="saveDto.reason"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <nz-table #nzTable class="small-table"  [nzData]="data"
+          [nzFrontPagination]="false" [nzLoading]="loading" [nzShowPagination]="false"
+          >
+          <thead>
+            <tr>
+              <th nzWidth="50px">序</th>
+              <th nzWidth="120px">审批人</th>
+              <th nzWidth="100px">审批状态</th>
+              <th >原因</th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let item of nzTable.data; let idx=index; ">
+              <td>{{idx+1}}</td>
+              <td>{{item.approvalUserId | formatUser}}</td>
+              <td>{{item.approvalResultState | enumType:'ApprovalResultState'}}</td>
+              <td>{{item.reason}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+  <div class="drawer-footer">
+    <button nz-button type="button" (click)="close()" class="ant-btn"
+      style="margin-right: 8px;"><span>取消</span></button>
+    <button nz-button type="button" (click)="save()" class="ant-btn ant-btn-primary"
+      [nzLoading]="saving"><span>确认</span></button>
+  </div>
+
+</nz-drawer>

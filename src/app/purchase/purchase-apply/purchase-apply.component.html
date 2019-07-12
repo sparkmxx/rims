@@ -1,0 +1,182 @@
+<nz-card class="ch-tab">
+    <div class="banner-changer">
+        <app-banner-column-changer></app-banner-column-changer>
+    </div>
+  <div nz-row>
+    <div nz-col [nzSpan]="webSettings.bannerLeft">
+      <div class="left-banner">
+        <div nz-form nzLayout="vertical" class="vertical-form">
+              <app-query-condition [queryDTO]="queryDTO"></app-query-condition>
+          </div>
+        <div class="m-b-20" nz-row>
+          <div nz-col nzSpan="16">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+              <input type="text" nz-input placeholder="请输入名称，编码..." [(ngModel)]="queryDTO.filter" (keypress)="keypress($event)"
+                formCotrolName="filter" />
+            </nz-input-group>
+            <ng-template #suffixIconButton>
+              <button nz-button nzType="primary" nzSearch (click)="refresh()"><i nz-icon type="search"></i></button>
+            </ng-template>
+          </div>
+          <div class="p-l-20" nz-col nzSpan="8">
+            <button nz-button nzType="default" (click)="confirmAdd()">添加</button>
+          </div>
+        </div>
+        <nz-table class="small-table" #virtualTable nzVirtualScroll [nzVirtualItemSize]="54" [nzData]="listOfData"
+          [nzFrontPagination]="false" [nzLoading]="isTableLoading" [nzShowPagination]="false"
+          [nzScroll]="{ x: '700px', y: '380px' }">
+          <thead>
+            <tr>
+              <th nzWidth="50px" nzLeft="0px" nzShowCheckbox (nzCheckedChange)="checkAll($event)">
+              </th>
+              <th nzWidth="40px" nzLeft="50px">序</th>
+              <th nzWidth="100px" nzLeft="90px">名称</th>
+              <th nzWidth="100px" nzShowSort >院内码</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="shortName">简称</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="brandName">品牌</th>
+
+              <th nzWidth="100px" nzShowSort nzSortKey="vendorMaterialCode">库存</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="materialTypeName">本月已定量</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="methodologyName">未到货量</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="specification">月均使用量</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="specification">单位</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="storageConditionName">规格</th>
+              <th nzWidth="100px" nzShowSort nzSortKey="temperatureRangeName">类型</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            <ng-template nz-virtual-scroll let-data let-index="index">
+              <tr>
+                <td nzLeft="0px" nzShowCheckbox [(nzChecked)]="mapOfCheckedId[data.id]"></td>
+                <td nzLeft="50px">{{index+1}}</td>
+                <td nzLeft="90px">{{data.name}}</td>
+                <td>{{data.hospitalMaterialCode}}</td>
+                <td>{{data.shortName}}</td>
+                <td>{{data.brandName}}</td>
+                
+                <td>{{data.organizationMaterialShareInfo.stock}}</td>
+                <td>{{data.organizationMaterialShareInfo.thisMonthPurchaseNumber}}</td>
+                <td>{{data.organizationMaterialShareInfo.thisMonthNotArrivedNumber}}</td>
+                <td>{{data.organizationMaterialShareInfo.monthlyAverageUsageNumber}}</td>
+                
+                <td>{{data.unitName}}</td>
+                <td>{{data.specification}}</td>
+
+
+                <td>{{data.materialTypeName}}</td>
+              
+              </tr>
+            </ng-template>
+          </tbody>
+        </nz-table>
+      </div>
+      <div>
+
+
+      </div>
+    </div>
+    <div nz-col [nzSpan]="webSettings.bannerRight">
+      <div class="m-b-10">
+        <button class="m-r-20" nz-button nzType="primary" (click)="apply()">申请</button>
+        <button class="m-r-20" nz-button nzType="default" (click)="clear()">清空</button>
+        <button class="m-r-20" nz-button nzType="default" (click)="download()"><i nz-icon type="download" theme="outline"></i>下载</button>
+          <nz-upload nzAction="{{remoteServiceBaseUrl}}/File/Upload" [nzShowUploadList]=false (nzChange)="uploadComplete($event)">
+            <button nz-button>
+            <i nz-icon type="upload"></i><span>上传</span>
+            </button>
+            </nz-upload>
+      </div>
+
+      <nz-table class="small-table" #applyTable [nzData]="applys" [nzFrontPagination]="false" [nzLoading]="loading"
+        [nzShowPagination]="false" [nzScroll]="{ x: '400px', y: '540px' }">
+        <thead>
+          <tr>
+            <th nzWidth="42px" nzLeft="0px">序</th>
+            <th nzWidth="150px" nzLeft="50px">名称</th>
+            <th nzWidth="100px" nzShowSort nzSortKey="hospitalMaterialCode">院内码</th>
+            <th nzWidth="130px" nzShowSort nzSortKey="number">数量</th>
+            <th nzWidth="180px" nzShowSort nzSortKey="materialTypeName">期望到货日期</th>
+            <th nzWidth="200px" nzShowSort nzSortKey="methodologyName">备注</th>
+            <th nzWidth="60px" nzRight="0px">删除</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of applyTable.data;let i = index;">
+            <td nzLeft="0px">{{i+1}}</td>
+            <td nzLeft="50px">{{item.name}}</td>
+            <td>{{item.hospitalMaterialCode}}</td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <nz-input-number placeholder="数量" [(ngModel)]="item.number" [nzMin]="0" [nzMax]="100000" [nzStep]="1">
+                  </nz-input-number>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-row-operations">
+                <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="item.expectedArrivalDate">
+                </nz-date-picker>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <div class="editable-cell-text-wrapper">
+                    <input nz-input placeholder="备注" name="remark" [(ngModel)]="item.remark">
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td nzRight="0px">
+              <div class="editable-row-operations">
+                <button nz-button nzSize="small" nzShape="circle" nzType="default" (click)="deleteDetail(item)"><i
+                    nz-icon type="minus" theme="outline"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+</nz-card>
+
+
+<nz-modal [(nzVisible)]="isVisible" nzWidth="80%" [nzTitle]="modalTitle" [nzContent]="modalContent"
+   (nzOnCancel)="handleCancel()">
+  <ng-template #modalTitle>
+    订单上传错误信息
+  </ng-template>
+  <ng-template #modalContent>
+
+    <div style="min-height: 400px;">
+
+     
+      <nz-table class="small-table" #infoTable [nzLoading]="loading" nzBordered [nzData]="errorInfos" nzHideOnSinglePage="true" 
+        >
+        <thead>
+          <tr>
+            <th nzWidth="60px">序</th>
+            <th nzWidth="280px">物料名称</th>
+            <th>院内码</th>
+            <th>行号</th>
+            <th>数量</th>
+            <th>错误原因</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of infoTable.data;let i = index;">
+            <td nzLeft="0px">{{i+1}}</td>
+            <td nzLeft="60px">{{item.materialName}}</td>
+            <td>{{item.hospitalMaterialCode}}</td>
+            <td>{{item.rowNumber}}</td>
+            <td>{{item.number}}</td>
+            <td>{{item.message}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </ng-template>
+</nz-modal>

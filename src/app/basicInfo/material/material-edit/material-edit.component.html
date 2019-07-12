@@ -1,0 +1,791 @@
+<nz-drawer [nzVisible]="isVisible" nzPlacement="right" nzTitle="物料" (nzOnClose)="close()" [nzWidth]="1000">
+
+  <form nz-form [formGroup]="validateForm">
+    <nz-tabset>
+
+      <nz-tab nzTitle="基础信息">
+
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="systemMaterialCode">系统码</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="systemMaterialCode" placeholder="系统码" name="systemMaterialCode"
+                  [(ngModel)]="saveDto.systemMaterialCode">
+                <nz-form-explain
+                  *ngIf="validateForm.get('systemMaterialCode').dirty && validateForm.get('systemMaterialCode').errors">
+                  系统码
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="hospitalMaterialCode">院内码</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="hospitalMaterialCode" placeholder="院内码" name="hospitalMaterialCode"
+                  [(ngModel)]="saveDto.hospitalMaterialCode">
+                <nz-form-explain
+                  *ngIf="validateForm.get('hospitalMaterialCode').dirty && validateForm.get('hospitalMaterialCode').errors">
+                  院内码
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="name">物料名称</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="name" placeholder="物料名称" name="name" [(ngModel)]="saveDto.name">
+                <nz-form-explain *ngIf="validateForm.get('name').dirty && validateForm.get('name').errors">
+                  请填写名称
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="specification">物料规格</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="specification" placeholder="物料规格" name="specification"
+                  [(ngModel)]="saveDto.specification">
+                <nz-form-explain
+                  *ngIf="validateForm.get('specification').dirty && validateForm.get('specification').errors">
+                  请填写名称
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="storageConditionId">存储条件</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select formControlName="storageConditionId" [(ngModel)]="saveDto.storageConditionId" nzAllowClear
+                  nzPlaceHolder="存储条件" (ngModelChange)="storageConditionChange($event)">
+                  <nz-option *ngFor="let option of dicts[enumObject.DictType.StorageCondition]" [nzValue]="option.value"
+                    [nzLabel]="option.name"></nz-option>
+                </nz-select>
+                <nz-form-explain
+                  *ngIf="validateForm.get('storageConditionId').dirty && validateForm.get('storageConditionId').errors">
+                  请选择 存储条件
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="temperatureRangeId">温度范围</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select formControlName="temperatureRangeId" [(ngModel)]="saveDto.temperatureRangeId" nzAllowClear
+                  nzPlaceHolder="温度范围"
+                  (ngModelChange)="selectKeyToName(tempDict,saveDto,'temperatureRangeId','temperatureRangeName')">
+                  <nz-option *ngFor="let option of tempDict" [nzValue]="option.value" [nzLabel]="option.name">
+                  </nz-option>
+                </nz-select>
+                <nz-form-explain
+                  *ngIf="validateForm.get('temperatureRangeId').dirty && validateForm.get('temperatureRangeId').errors">
+                  请选择 温度范围
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="materialTypeId">物料类型</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select formControlName="materialTypeId" [(ngModel)]="saveDto.materialTypeId" nzAllowClear
+                  nzPlaceHolder="物料类型"
+                  (ngModelChange)="selectKeyToName(dicts[enumObject.DictType.MaterialType],saveDto,'materialTypeId','materialTypeName')">
+                  <nz-option *ngFor="let option of dicts[enumObject.DictType.MaterialType]" [nzValue]="option.value"
+                    [nzLabel]="option.name"></nz-option>
+                </nz-select>
+                <nz-form-explain
+                  *ngIf="validateForm.get('materialTypeId').dirty && validateForm.get('materialTypeId').errors">
+                  请选择 物料类型
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="brandId">所属品牌</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select formControlName="brandId"
+                  (ngModelChange)="selectKeyToName(brands,saveDto,'brandId','brandName')" [(ngModel)]="saveDto.brandId"
+                  nzAllowClear nzPlaceHolder="所属品牌">
+                  <nz-option *ngFor="let option of brands" [nzValue]="option.value" [nzLabel]="option.name"></nz-option>
+                </nz-select>
+                <nz-form-explain *ngIf="validateForm.get('brandId').dirty && validateForm.get('brandId').errors">
+                  请选择 所属品牌
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">采购价格</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-number placeholder="采购价格" formControlName="price" [(ngModel)]="saveDto.price" [nzMin]="0"
+                  [nzMax]="100000" [nzStep]="1"></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="unitId">采购单位</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select formControlName="unitId"
+                  (ngModelChange)="selectKeyToName(dicts[enumObject.DictType.MaterialUnit],saveDto,'unitId','unitName')"
+                  [(ngModel)]="saveDto.unitId" nzAllowClear nzPlaceHolder="采购单位">
+                  <nz-option *ngFor="let option of dicts[enumObject.DictType.MaterialUnit]" [nzValue]="option.value"
+                    [nzLabel]="option.name"></nz-option>
+                </nz-select>
+                <nz-form-explain *ngIf="validateForm.get('unitId').dirty && validateForm.get('unitId').errors">
+                  请选择 采购单位
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="minUnitId">最小单位</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select formControlName="minUnitId"
+                  (ngModelChange)="selectKeyToName(dicts[enumObject.DictType.MaterialUnit],saveDto,'minUnitId','minUnitName')"
+                  [(ngModel)]="saveDto.minUnitId" nzAllowClear nzPlaceHolder="最小单位">
+                  <nz-option *ngFor="let option of dicts[enumObject.DictType.MaterialUnit]" [nzValue]="option.value"
+                    [nzLabel]="option.name"></nz-option>
+                </nz-select>
+                <nz-form-explain *ngIf="validateForm.get('minUnitId').dirty && validateForm.get('minUnitId').errors">
+                  请选择 最小单位
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="unitConvertRate">单位转换比</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-number placeholder="单位转换比" formControlName="unitConvertRate"
+                  [(ngModel)]="saveDto.unitConvertRate" [nzMin]="0" [nzMax]="100000" [nzStep]="1"></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">简称</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="shortName" placeholder="简称" [(ngModel)]="saveDto.shortName">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="organizationUnitIds">所属部门</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-group>
+                  <nz-tree-select style="width:100%;" formControlName="organizationUnitIds" name="organizationUnitIds"
+                    [nzNodes]="treeNodes" nzShowSearch nzPlaceHolder="所属部门" [(ngModel)]="organizationUnitIds"
+                    [nzDefaultExpandAll]="true" [nzMaxTagCount]="3" [nzAllowClear]="false" [nzMultiple]="true">
+                  </nz-tree-select>
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="instrumentId">所属仪器</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select [(ngModel)]="saveDto.instrumentId" formControlName="instrumentId"
+                  (ngModelChange)="selectKeyToName(instruments,saveDto,'instrumentId','instrumentName')" nzAllowClear
+                  nzPlaceHolder="所属仪器">
+                  <nz-option *ngFor="let option of instruments" [nzValue]="option.value" [nzLabel]="option.name">
+                  </nz-option>
+                </nz-select>
+
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+        </div>
+
+      </nz-tab>
+
+      <nz-tab nzTitle="关联信息">
+        <div nz-row [nzGutter]="24">
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="supplierId">供应商</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select formControlName="supplierId" nzShowSearch
+                  (ngModelChange)="selectKeyToName(vendors['Supplier'],saveDto,'supplierId','supplierName')"
+                  [(ngModel)]="saveDto.supplierId" nzAllowClear nzPlaceHolder="供应商">
+                  <nz-option *ngFor="let option of vendors['Supplier']" [nzValue]="option.value"
+                    [nzLabel]="option.name">
+                  </nz-option>
+                </nz-select>
+
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="manufacturerId">生产厂商</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select formControlName="manufacturerId" nzShowSearch
+                  (ngModelChange)="selectKeyToName(vendors['Manufacturer'],saveDto,'manufacturerId','manufacturerName')"
+                  [(ngModel)]="saveDto.manufacturerId" nzAllowClear nzPlaceHolder="生产厂商">
+                  <nz-option *ngFor="let option of vendors['Manufacturer']" [nzValue]="option.value"
+                    [nzLabel]="option.name">
+                  </nz-option>
+                </nz-select>
+
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="invoicingCompanyId">开票公司</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select formControlName="invoicingCompanyId" nzShowSearch
+                  (ngModelChange)="selectKeyToName(vendors['InvoicingCompany'],saveDto,'invoicingCompanyId','invoicingCompanyName')"
+                  [(ngModel)]="saveDto.invoicingCompanyId" nzAllowClear nzPlaceHolder="开票公司">
+                  <nz-option *ngFor="let option of vendors['InvoicingCompany']" [nzValue]="option.value"
+                    [nzLabel]="option.name">
+                  </nz-option>
+                </nz-select>
+
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="deliveryCompanyId">发货公司</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select formControlName="deliveryCompanyId" nzShowSearch [(ngModel)]="saveDto.deliveryCompanyId"
+                  (ngModelChange)="selectKeyToName(vendors['DeliveryCompany'],saveDto,'deliveryCompanyId','deliveryCompanyName')"
+                  nzAllowClear nzPlaceHolder="发货公司">
+                  <nz-option *ngFor="let option of vendors['DeliveryCompany']" [nzValue]="option.value"
+                    [nzLabel]="option.name">
+                  </nz-option>
+                </nz-select>
+
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">开封效期</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-number formControlName="outBoxExpiryDate" placeholder="开封效期"
+                  [(ngModel)]="saveDto.outBoxExpiryDate" [nzMin]="0" [nzMax]="100000" [nzStep]="1"></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">有注册证</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isRegistrationCertificate" formControlName="isRegistrationCertificate">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="registrationCertificateNo">注册证号码</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input placeholder="注册证号码" formControlName="registrationCertificateNo"
+                  [(ngModel)]="saveDto.registrationCertificateNo">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">有效期</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-date-picker formControlName="expiryDate" [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="saveDto.expiryDate">
+                </nz-date-picker>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="registrationCertificateFilePath">注册证照片
+              </nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
+                  <input nz-input formControlName="registrationCertificateFilePath" placeholder="注册证照片"
+                    [(ngModel)]="saveDto.registrationCertificateFilePath">
+                </nz-input-group>
+                <ng-template #suffixButton>
+                  <nz-upload nzAction="{{remoteServiceBaseUrl}}/File/Upload" [nzShowUploadList]=false
+                    (nzChange)="uploadComplete($event)">
+                    <button nz-button nzType="primary" nzSearch><i nz-icon type="upload"></i></button>
+                  </nz-upload>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="methodologyId">方法学</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select [(ngModel)]="saveDto.methodologyId" formControlName="methodologyId"
+                  (ngModelChange)="selectKeyToName(dicts[enumObject.DictType.MethodologyType],saveDto,'methodologyId','methodologyName')"
+                  nzAllowClear nzPlaceHolder="方法学">
+                  <nz-option *ngFor="let option of dicts[enumObject.DictType.MethodologyType]" [nzValue]="option.value"
+                    [nzLabel]="option.name"></nz-option>
+                </nz-select>
+
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">物料停用</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isDisabled" formControlName="isDisabled">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">停用日期</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="saveDto.disabledDate"
+                  formControlName="disabledDate"></nz-date-picker>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="disabledReasonId">停用原因</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select [(ngModel)]="saveDto.disabledReasonId"
+                  (ngModelChange)="selectKeyToName(dicts[enumObject.DictType.DisabledReason],saveDto,'disabledReasonId','disabledReasonName')"
+                  formControlName="disabledReasonId" nzAllowClear nzPlaceHolder="停用原因">
+                  <nz-option *ngFor="let option of dicts[enumObject.DictType.DisabledReason]" [nzValue]="option.value"
+                    [nzLabel]="option.name"></nz-option>
+                </nz-select>
+
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">厂商码</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input placeholder="厂商码" [(ngModel)]="saveDto.vendorMaterialCode"
+                  formControlName="vendorMaterialCode">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">停采/采购</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isStopPurchase" formControlName="isStopPurchase">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="10" [nzXs]="24">自动生成唯一吗</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isAutoGenerateUniqueCode" formControlName="isAutoGenerateUniqueCode">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="10" [nzXs]="24">出库启用厂商码</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isEnableVendorMaterialCode" formControlName="isDisabled">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="10" [nzXs]="24">开瓶标贴</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isEnableOpenLabel" formControlName="isEnableOpenLabel">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="10" [nzXs]="24">PP检证书</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isHavePpCertificate" formControlName="isHavePpCertificate">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="10" [nzXs]="24">公共试剂</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isPublicReagent" formControlName="isPublicReagent">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="10" [nzXs]="24">组合试剂</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isCombinationReagent" formControlName="isCombinationReagent">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+        </div>
+      </nz-tab>
+      <nz-tab nzTitle="报警信息">
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="10" [nzXs]="24">库存量报警</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isInventoryAlert" formControlName="isInventoryAlert">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">报警库存</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-number formControlName="alertMaterialNumber" placeholder="报警库存"
+                  [(ngModel)]="saveDto.alertMaterialNumber" [nzMin]="0" [nzMax]="100000" [nzStep]="1"></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">最低库存量</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-number formControlName="alertMinMaterialNumber" placeholder="最低库存量"
+                  [(ngModel)]="saveDto.alertMinMaterialNumber" [nzMin]="0" [nzMax]="100000" [nzStep]="1">
+                </nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="10" [nzXs]="24">可用天数</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isAvailableDayAlert" formControlName="isAvailableDayAlert">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">报警可用天数</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-number formControlName="alertAvailableDay" placeholder="报警可用天数"
+                  [(ngModel)]="saveDto.alertAvailableDay" [nzMin]="0" [nzMax]="100000" [nzStep]="1"></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">最低可用天数</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-number formControlName="alertMinAvailableDay" placeholder="最低库存量"
+                  [(ngModel)]="saveDto.alertMinAvailableDay" [nzMin]="0" [nzMax]="100000" [nzStep]="1">
+                </nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="10" [nzXs]="24">是否自动计算采购量</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isAutoPurchaseCalculate" formControlName="isAutoPurchaseCalculate">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">月采购上限</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-number formControlName="monthPurchaseUpperLimit" placeholder="报警可用天数"
+                  [(ngModel)]="saveDto.monthPurchaseUpperLimit" [nzMin]="0" [nzMax]="100000" [nzStep]="1">
+                </nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="10" [nzXs]="24">手工设置</nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-switch [(ngModel)]="saveDto.isDefaultPurchaseNumber" formControlName="isDefaultPurchaseNumber">
+                </nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label [nzSm]="8" [nzXs]="24">建议采购</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-number formControlName="defaultPurchaseNumber" placeholder="报警可用天数"
+                  [(ngModel)]="saveDto.defaultPurchaseNumber" [nzMin]="0" [nzMax]="100000" [nzStep]="1">
+                </nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </nz-tab>
+
+      <nz-tab nzTitle="出入库设置">
+        <div nz-row class="m-t-10">
+          <div nz-col nzSpan="4">
+            <button nz-button nzType="default" (click)="addStorages()">添加入库设置</button>
+          </div>
+          <div nz-col nzSpan="20">
+            <nz-table class="small-table" #storageSettings nzBordered [nzData]="saveDto.materialOutInStorages"
+              nzHideOnSinglePage="true" [nzPageSize]="50" [nzScroll]="{ y: '210px'}">
+              <thead>
+                <tr>
+                  <th nzWidth="80px">序</th>
+                  <th nzWidth="250px">仓库等级</th>
+                  <th nzWidth="200px">入库单位</th>
+                  <th nzWidth="60px" nzRight="0px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let item of storageSettings.data  | arrayFilter:{field:'outInStorageType',value:enumObject.OutInStorageType.In};let i = index;">
+                  <td>{{i+1}}</td>
+                  <td>
+                    <div class="editable-cell">
+                      <div class="editable-cell-text-wrapper">
+                        <nz-select [ngModelOptions]="{standalone: true}" [(ngModel)]="item.warehouseGradeType"
+                          nzAllowClear nzPlaceHolder="仓库等级">
+                          <nz-option *ngFor="let option of enumArray.WarehouseGradeType" [nzValue]="option.value"
+                            [nzLabel]="option.description"></nz-option>
+                        </nz-select>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="editable-cell">
+                      <div class="editable-cell-text-wrapper">
+                        <div class="editable-cell-text-wrapper">
+                          <nz-select [ngModelOptions]="{standalone: true}" (ngModelChange)="unitTransformChange(item,enumObject.OutInStorageType.In)"
+                            [(ngModel)]="item.unitId" nzAllowClear nzPlaceHolder="入库单位">
+                            <nz-option *ngFor="let option of dicts[enumObject.DictType.MaterialUnit]"
+                              [nzValue]="option.value" [nzLabel]="option.name"></nz-option>
+                          </nz-select>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td nzRight="0px">
+                    <div class="editable-row-operations">
+                      <button nz-button nzSize="small" nzShape="circle" nzType="default"
+                        (click)="deleteStorageSetting(item,enumObject.OutInStorageType.In)"><i nz-icon type="minus" theme="outline"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>
+        </div>
+        <div nz-row class="m-t-10" *ngIf="inStorageDetails.length>0">
+          <h5 nz-col nzSpan="4" style="padding-left:10px;font-weight:bold;">入库转换比 <button nz-button nzSize="small" nzShape="circle" nzType="default"
+            (click)="clearInStorageDetails(item)"><i nz-icon type="minus" theme="outline"></i>
+          </button></h5>
+          <div nz-col nzSpan="20">
+            <div class="unit-item" *ngFor="let item of inStorageDetails">
+              <nz-input-number [ngModelOptions]="{standalone: true}" [(ngModel)]="item.multiple" [nzMin]="1"
+                [nzMax]="100000" [nzStep]="1"></nz-input-number>
+              <span>{{item.unitName}}</span>
+            </div>
+            
+          </div>
+        </div>
+        <div nz-row class="m-t-10">
+          <div nz-col nzSpan="4">
+            <button nz-button nzType="default" (click)="addOutStorages()">添加出库设置</button>
+          </div>
+          <div nz-col nzSpan="20">
+            <nz-table class="small-table" #outStorageSettings nzBordered [nzData]="saveDto.materialOutInStorages"
+              nzHideOnSinglePage="true" [nzPageSize]="50" [nzScroll]="{ y: '210px'}">
+              <thead>
+                <tr>
+                  <th nzWidth="80px">序</th>
+                  <th nzWidth="250px">仓库等级</th>
+                  <th nzWidth="200px">入库单位</th>
+                  <th nzWidth="60px" nzRight="0px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let item of outStorageSettings.data | arrayFilter:{field:'outInStorageType',value:enumObject.OutInStorageType.Out};let i = index;">
+                  <td>{{i+1}}</td>
+                  <td>
+                    <div class="editable-cell">
+                      <div class="editable-cell-text-wrapper">
+                        <nz-select [ngModelOptions]="{standalone: true}" [(ngModel)]="item.warehouseGradeType"
+                          nzAllowClear nzPlaceHolder="仓库等级">
+                          <nz-option *ngFor="let option of enumArray.WarehouseGradeType" [nzValue]="option.value"
+                            [nzLabel]="option.description"></nz-option>
+                        </nz-select>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="editable-cell">
+                      <div class="editable-cell-text-wrapper">
+                        <div class="editable-cell-text-wrapper">
+                          <nz-select [ngModelOptions]="{standalone: true}"
+                            (ngModelChange)="unitTransformChange(item,enumObject.OutInStorageType.Out)"
+                            [(ngModel)]="item.unitId" nzAllowClear nzPlaceHolder="出库单位">
+                            <nz-option *ngFor="let option of dicts[enumObject.DictType.MaterialUnit]"
+                              [nzValue]="option.value" [nzLabel]="option.name"></nz-option>
+                          </nz-select>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td nzRight="0px">
+                    <div class="editable-row-operations">
+                      <button nz-button nzSize="small" nzShape="circle" nzType="default"
+                        (click)="deleteStorageSetting(item,enumObject.OutInStorageType.Out)"><i nz-icon type="minus" theme="outline"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>
+        </div>
+        <div nz-row class="m-t-10" *ngIf="outStorageDetails.length>0">
+          <h5 nz-col nzSpan="4" style="padding-left:10px;font-weight:bold;">出库转换比 <button nz-button nzSize="small" nzShape="circle" nzType="default"
+            (click)="clearOutStorageDetails(item)"><i nz-icon type="minus" theme="outline"></i>
+          </button></h5>
+          <div nz-col nzSpan="20">
+            <div class="unit-item" *ngFor="let item of outStorageDetails">
+              <nz-input-number [ngModelOptions]="{standalone: true}" [(ngModel)]="item.multiple" [nzMin]="1"
+                [nzMax]="100000" [nzStep]="1"></nz-input-number>
+              <span>{{item.unitName}}</span>
+            </div>
+            
+          </div>
+        </div>
+      </nz-tab>
+      <nz-tab nzTitle="性能验证">
+        <div nz-row class="m-t-20">
+          <div nz-col nzSpan="4">
+            <div>
+              <nz-switch [(ngModel)]="saveDto.isPerformanceVerification" formControlName="isPerformanceVerification">
+              </nz-switch>
+            </div>
+            <div class="m-t-20">
+              <button nz-button nzType="default" (click)="inspectionItemOpen()">添加检验项目</button>
+            </div>
+          </div>
+          <div nz-col nzSpan="20">
+            <nz-table class="small-table" #performanceVerificationMaterials nzBordered [nzData]="saveDto.performanceVerificationMaterials"
+              nzHideOnSinglePage="true" [nzPageSize]="50" [nzScroll]="{ y: '210px',x:'500px'}">
+              <thead>
+                <tr>
+                  <th nzWidth="50px" nzLeft="0px">序</th>
+                  <th nzWidth="100px" nzLeft="50px">名称</th>
+                  <th nzWidth="150px">参考区间（最小）</th>
+                  <th nzWidth="150px">参考区间（最大）</th>
+                  <th nzWidth="100px">参考单位</th>
+                  <th nzWidth="100px">计算公式</th>
+                  <th nzWidth="100px">偏差%</th>
+                  <th nzWidth="100px">参考结果</th>
+                  <th nzWidth="60px" nzRight="0px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of performanceVerificationMaterials.data;let i = index;">
+                  <td nzLeft="0px">{{i+1}}</td>
+                  <td nzLeft="50px">{{item.inspectionItemName}}</td>
+                  <td>
+                    <nz-input-number placeholder="参考区间（最小）" [ngModelOptions]="{standalone: true}"
+                      [(ngModel)]="item.minReferenceRange" [nzMin]="0" [nzMax]="100000" [nzStep]="1"></nz-input-number>
+                  </td>
+                  <td>
+                    <nz-input-number placeholder="参考区间（最大）" [ngModelOptions]="{standalone: true}"
+                      [(ngModel)]="item.maxReferenceRange" [nzMin]="0" [nzMax]="100000" [nzStep]="1"></nz-input-number>
+                  </td>
+                  <td>{{item.referenceUnit}}</td>
+                  <td>{{item.calculationFormula}}</td>
+                  <td>{{item.deviation}}</td>
+                  <td>{{item.referenceResult  | formatValueToName:{data:dicts[enumObject.DictType.InspectResultType],valueField:'value',nameField:'name'} }}</td>
+                  <td nzRight="0px"><button nz-button nzSize="small" nzShape="circle" nzType="default"
+                    (click)="deletePerformanceVerificationMaterials(item)"><i nz-icon type="minus" theme="outline"></i>
+                  </button></td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>
+        </div>
+
+      </nz-tab>
+    </nz-tabset>
+  </form>
+
+
+
+
+
+
+  <div class="drawer-footer">
+    <button nz-button type="button" (click)="close()" class="ant-btn"
+      style="margin-right: 8px;"><span>取消</span></button>
+    <button nz-button type="button" (click)="save()" class="ant-btn ant-btn-primary" [disabled]="!validateForm.valid"
+      [nzLoading]="saving"><span>确认</span></button>
+  </div>
+
+  <app-material-inspection-item #materialInspectionItemModal (modalSave)="saveInspectionItem($event)">
+  </app-material-inspection-item>
+
+</nz-drawer>
+<!-- 
+  [disabled]="!validateForm.valid" -->

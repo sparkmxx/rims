@@ -1,0 +1,44 @@
+<nz-drawer [nzVisible]="visible" nzPlacement="right" nzTitle="选择用户" (nzOnClose)="close()" [nzWidth]="720">
+
+  <div nz-row class="m-b-20">
+    <div nz-col nzSpan="4" style="text-align: right;padding:5px 15px;">
+      名称：
+    </div>
+    <div nz-col nzSpan="10">
+      <input nz-input placeholder="名称：" name="filter" [(ngModel)]="filter" (keypress)="refresh()">
+    </div>
+    <div nz-col nzSpan="8">
+        <button  type="button" (click)="refresh()" class="ant-btn m-l-20" >查询</button>
+    </div>
+  </div>
+  <nz-table class="small-table" #nzTable [nzData]="data" [nzFrontPagination]=false nzShowSizeChanger [nzLoading]="loading"
+    [(nzPageSize)]=pageSize [(nzPageIndex)]=pageNumber [nzTotal]=totalItems (nzPageSizeChange)="refresh(true)"
+    (nzPageIndexChange)="refresh()" [nzScroll]="{ x:'900px',y: '540px' }">
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+      <tr>
+        <th nzWidth="50px" nzLeft="0px" nzShowCheckbox [(nzChecked)]="isAllDisplayDataChecked" (nzCheckedChange)="checkAll($event)"></th>
+        <th nzWidth="250px" nzLeft="50px">名称</th>
+        <th nzWidth="150px">院内码</th>
+        <th nzWidth="150px">规格</th>
+        <th nzWidth="150px">品牌</th>
+        <th nzWidth="150px">制造商</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data">
+        <td nzLeft="0px" nzShowCheckbox [(nzChecked)]="mapOfCheckedId[item.id]" (nzCheckedChange)="refreshStatus(item)"></td>
+        <td nzLeft="50px">{{item.name}}</td>
+        <td >{{item.hospitalMaterialCode}}</td>
+        <td>{{item.specification}}</td>
+        <td>{{item.brandName}}</td>
+        <td>{{item.manufacturerName}}</td>
+
+      </tr>
+    </tbody>
+  </nz-table>
+  <div class="drawer-footer">
+    <button type="button" (click)="close()" class="ant-btn" style="margin-right: 8px;"><span>取消</span></button>
+    <button type="button" (click)="saveUsers()" class="ant-btn ant-btn-primary"><span>确认</span></button>
+  </div>
+</nz-drawer>

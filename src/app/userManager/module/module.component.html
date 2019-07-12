@@ -1,0 +1,67 @@
+<nz-card class="ch-tab">
+  <div class="search-list">
+      <div class="row custom-form">
+          <div class="col-xs-4 col-lg-3">
+              <div class="form-group">
+                  <input nz-input placeholder="名称" [(ngModel)]="filter" (keypress)="keypress($event)">
+              </div>
+          </div>
+          <div class="col-xs-6 col-lg-5 ">
+              <button nz-button nzType="default" (click)="refresh()"><i nz-icon type="search" theme="outline"></i>查询</button>
+              &nbsp;
+              <button nz-button nzType="default" (click)="createModule()"><i nz-icon type="plus-circle" theme="outline"></i>新增</button>
+          </div>
+      </div>
+  </div>
+  <nz-table class="small-table" #nzTable [nzData]="data" [nzFrontPagination]=false nzShowSizeChanger [nzLoading]="isTableLoading" [(nzPageSize)]=pageSize
+  [(nzPageIndex)]=pageNumber [nzTotal]=totalItems (nzPageSizeChange)="refresh()" (nzPageIndexChange)="refresh()">
+      <thead>
+          <tr>
+              <th nzWidth="20%">名称</th>
+              <th nzWidth="10%">图标</th>
+              <th nzWidth="15%">地址</th>
+              <th nzWidth="15%">显示名称</th>
+              <th nzWidth="5%">默认</th>
+              <th nzWidth="10%">排序</th>
+              <th nzWidth="15%">创建时间</th>
+              <th nzWidth="10%">操作</th>
+          </tr>
+      </thead>
+      <tbody>
+          <ng-template ngFor let-data [ngForOf]="nzTable.data">
+              <ng-template ngFor let-item [ngForOf]="expandDataCache[data.id]">
+                  <tr *ngIf="(item.parent&&item.parent.expand)||!(item.parent)" (click)="selectModule(data.id)" [ngClass]="{'select':item.id===selectedId}">
+                      <td [nzIndentSize]="item.level*20" [nzShowExpand]="item.children&&item.children.length>0" [(nzExpand)]="item.expand"
+                          (nzExpandChange)="collapse(expandDataCache[data.id],item,$event)">
+                          {{item.name}}
+                      </td>
+                      <td>{{item.icon}}</td>
+                      <td>{{item.url}}</td>
+                      <td>{{item.displayName}}</td>
+                      <td>{{item.isDefault|formatBoolean}}</td>
+                      <td>{{item.sortRank}}</td>
+                      <td>{{item.creationTime| date:'yyyy-MM-dd hh-mm-ss'}}</td>
+                      <td>
+                          <div class="editable-row-operations">
+                              <nz-dropdown>
+                                  <button nz-button nzSize="small" nz-dropdown>操作<i nz-icon type="down"></i></button>
+                                  <ul nz-menu>
+                                      <li nz-menu-item (click)="editModule(item)">
+                                          <a>修改</a>
+                                      </li>
+                                      <li nz-menu-item (click)="delete(item)">
+                                          <a>删除</a>
+                                      </li>
+                                  </ul>
+                              </nz-dropdown>
+
+                          </div>
+                      </td>
+                  </tr>
+              </ng-template>
+          </ng-template>
+      </tbody>
+  </nz-table>
+</nz-card>
+
+<app-module-edit #moduleEditModal (modalSave)="refresh()"></app-module-edit>

@@ -1,0 +1,78 @@
+<nz-card class="ch-tab">
+  <div nz-form [nzLayout]="'inline'" class="m-b-20">
+    <nz-form-item>
+      <nz-form-control>
+        <input nz-input placeholder="名称" [(ngModel)]="filter">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="default" (click)="refresh()"><i nz-icon type="search" theme="outline"></i>查询
+        </button>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <div>
+    <nz-table class="small-table" #nzTable nzBordered [nzData]="data" [nzFrontPagination]=false nzShowSizeChanger [nzLoading]="loading"
+      [(nzPageSize)]=pageSize [(nzPageIndex)]=pageNumber [nzTotal]=totalItems (nzPageSizeChange)="refresh(true)"
+      (nzPageIndexChange)="refresh()">
+      <thead>
+        <tr>
+          <th nzWidth="5%" nzShowCheckbox (nzCheckedChange)="checkAll($event)">
+          </th>
+          <th nzWidth="5%" nzShowExpand>展示</th>
+          <th nzWidth="5%">序号</th>
+          <th nzWidth="10%">状态</th>
+          <th nzWidth="20%">请领单号</th>
+          <th nzWidth="10%">请领人</th>
+          <th nzWidth="10%">请领部门</th>
+          <th nzWidth="15%">请领日期</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-obj [ngForOf]="nzTable.data" let-i="index">
+          <tr>
+            <td nzShowCheckbox [(nzChecked)]="mapOfCheckedId[obj.id]"></td>
+            <td nzShowExpand [(nzExpand)]="expandDataCache[i.toString()].expand"></td>
+            <td>{{i+1}}</td>
+            <td>{{obj.requestPurchaseState | enumType:'RequestPurchaseState'}}</td>
+            <td>{{obj.requestOrderNo}}</td>
+            <td>{{obj.applicantUserId | formatUser}}</td>
+            <td>{{obj.organizationName}}</td>
+            <td>{{obj.applicationTime | date:'yyyy-MM-dd'}}</td>
+          </tr>
+          <tr [nzExpand]="expandDataCache[i.toString()].expand">
+            <td></td>
+            <td colspan="8">
+              <nz-table class="small-table" #innerTable [nzData]="obj.materialRequestDetails" nzSize="middle" [nzShowPagination]="false">
+                <thead>
+                  <tr>
+                    <th>序</th>
+                    <th>院内码</th>
+                    <th>物料名称</th>
+                    <th>数量</th>
+                    <th>单位</th>
+                    <th>效期</th>
+                    <th>备注</th>
+                  </tr>
+                </thead>
+      <tbody>
+        <tr *ngFor="let item of innerTable.data; let idx=index; ">
+          <td>{{idx+1}}</td>
+          <td>{{item.hospitalMaterialCode}}</td>
+          <td>{{item.materialName}}</td>
+          <td>{{item.number}}</td>
+          <td>{{item.unitName}}</td>
+          <td>{{item.expiryDate | date:'yyyy-MM-dd'}}</td>
+          <td>{{item.remark}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+    </td>
+    </tr>
+    </ng-template>
+    </tbody>
+    </nz-table>
+  </div>
+</nz-card>

@@ -1,0 +1,40 @@
+<nz-modal [(nzVisible)]="isVisible" nzWidth="80%" [nzTitle]="modalTitle" [nzContent]="modalContent"
+  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+  <ng-template #modalTitle>
+    库存
+  </ng-template>
+  <ng-template #modalContent>
+
+    <div style="min-height: 400px;">
+
+     
+      <nz-table class="small-table" #materials [nzLoading]="loading" nzBordered [nzData]="data" nzHideOnSinglePage="true" 
+        >
+        <thead>
+          <tr>
+            <th nzWidth="60px" >序</th>
+            <th>名称</th>
+            <th>院内码</th>
+            <th >库存数量</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of materials.data;let i = index;">
+            <td nzLeft="0px">{{i+1}}</td>
+            <td nzLeft="60px">{{item.materialName}}</td>
+            <td>{{item.hospitalMaterialCode}}</td>
+            <td>{{item.number}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+
+  </ng-template>
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">取消</button>
+    <button nz-button nzType="primary" (click)="save()" 
+      [nzLoading]="isConfirmLoading">保存
+    </button>
+  </ng-template>
+</nz-modal>

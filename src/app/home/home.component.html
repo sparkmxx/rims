@@ -1,0 +1,73 @@
+<nz-card>
+  <div nz-row nzGutter="16">
+    <nz-spin nzSimple *ngIf="loading"></nz-spin>
+    <div nz-col nzXs="24" nzSm="12" nzMd="8" class="mb-md">
+      <a nz-row nzType="flex" nzAlign="middle" class="bg-blue rounded-md">
+        <div nz-col nzSpan="16" class="p-md text-white">
+          <div class="h2">本月采购</div>
+          <p class="text-nowrap mb0">{{data.purchase.thisMonthPurchaseCount}}</p>
+        </div>
+        <div nz-col nzSpan="8">
+          <div class="home-logo">
+            <i nz-icon type="shopping-cart" theme="outline"></i>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div nz-col nzXs="24" nzSm="12" nzMd="8" class="mb-md">
+      <div nz-row nzType="flex" nzAlign="middle" class="bg-success rounded-md">
+        <div nz-col nzSpan="16" class="p-md text-white">
+          <div class="h2 mt0">本月入库</div>
+          <p class="text-nowrap mb0">
+            {{data.storage.thisMonthStorageCount}}
+          </p>
+        </div>
+        <div nz-col nzSpan="8" class="home-logo">
+          <i nz-icon type="import" theme="outline"></i>
+        </div>
+      </div>
+    </div>
+    <div nz-col nzXs="24" nzSm="12" nzMd="8" class="mb-md">
+      <a nz-row nzType="flex" nzAlign="middle" class="bg-orange rounded-md">
+        <div nz-col nzSpan="16" class="p-md text-white">
+          <div class="h2 mt0">本月出库</div>
+          <p class="text-nowrap mb0"> {{data.outStorage.thisMonthOutStorageCount}}</p>
+        </div>
+        <div nz-col nzSpan="8" class="home-logo">
+          <i nz-icon type="export" theme="outline"></i>
+        </div>
+      </a>
+    </div>
+    <!-- <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+      <a nz-row nzType="flex" nzAlign="middle" class="bg-magenta rounded-md" routerLink="../userCenter/personalInfo">
+        <div nz-col nzSpan="16" class="p-md text-white">
+          <div class="h2 mt0">个人中心</div>
+          <p class="text-nowrap mb0">User Center</p>
+        </div>
+        <div nz-col nzSpan="8" class="home-logo">
+          <i nz-icon type="user" theme="outline"></i>
+        </div>
+      </a>
+    </div> -->
+  </div>
+  <div nz-row style="margin-top:50px">
+    <div nz-col nzSpan="12">
+      <nz-card [nzBordered]="false" nzTitle="系统简介">
+        <p>
+            试剂耗材管理软件是一款集试剂采购申请，多级库挑拨，多级库智能审核管理，扫码出入库, 库存盘点，条码打印，性能验证等功能于一体的智能化试剂耗材信息管理系统。
+          试剂耗材管理系统的应用，简化检验科室多级仓库及人员审核流程，减少医务人员的工作量，提高工作效率，提高医院信息化程度，规范了权限与流程管理。
+        </p>
+      </nz-card>
+    </div>
+    <div nz-col nzSpan="12">
+      <nz-card [nzBordered]="false" nzTitle="联系我们">
+        <p>
+          公司：上海友徕信息科技发展有限公司
+        </p>
+        <p>
+          电话：021-31105353
+        </p>
+      </nz-card>
+    </div>
+  </div>
+</nz-card>

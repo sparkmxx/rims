@@ -1,0 +1,38 @@
+  <nz-form-item >
+    <nz-form-label [nzSm]="6" [nzXs]="24" >部门</nz-form-label>
+    <nz-form-control [nzSm]="18" [nzXs]="24">
+      <nz-tree-select #nzTreeComponent  class="custom-item" [nzNodes]="treeNodes" nzShowSearch nzPlaceHolder="部门"
+        [(ngModel)]="queryDTO.organizationId" (ngModelChange)="onChange($event)" >
+      </nz-tree-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" >仪器</nz-form-label>
+    <nz-form-control [nzSm]="18" [nzXs]="24">
+      <nz-select  class="custom-item" nzAllowClear nzPlaceHolder="所属仪器" [(ngModel)]="queryDTO.instrumentId" formCotrolName="ttt">
+        <nz-option *ngFor="let option of instrumnets" [nzValue]="option.value"
+          [nzLabel]="option.name">
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" >类型</nz-form-label>
+    <nz-form-control [nzSm]="18" [nzXs]="24">
+      <nz-select class="custom-item" nzAllowClear nzPlaceHolder="类型" [(ngModel)]="queryDTO.materialTypeId"
+        formCotrolName="materialTypeId">
+        <nz-option *ngFor="let option of dicts[enumObject.DictType.MaterialType]" [nzValue]="option.value"
+          [nzLabel]="option.name">
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" >品牌</nz-form-label>
+    <nz-form-control [nzSm]="18" [nzXs]="24">
+      <nz-select class="custom-item" nzAllowClear nzPlaceHolder="品牌" [(ngModel)]="queryDTO.brandId" formCotrolName="brandId">
+        <nz-option *ngFor="let option of brands" [nzValue]="option.value" [nzLabel]="option.name">
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>

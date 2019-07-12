@@ -1,0 +1,109 @@
+<div class="logo">
+  <img src="assets/images/icon.ico">
+  试剂耗材管理系统
+</div>
+<div class="top-nav-wrap">
+  <ul class="top-nav">
+    <!-- Menu -->
+    <li>
+      <div class="item" (click)="webSetting.toggle()">
+        <i nz-icon [nzType]="webSetting.isCollapsed?'menu-unfold':'menu-fold'" nzTheme="outline"></i>
+      </div>
+    </li>
+    <!-- Github Page -->
+    <!--<li>-->
+    <!--<a class="item" href="//github.com/cipchk/ng-alain" target="_blank">-->
+    <!--<i class="anticon anticon-github"></i>-->
+    <!--</a>-->
+    <!--</li>-->
+    <!-- Lock Page -->
+    <!--<li class="hidden-xs">-->
+    <!--<div class="item" >-->
+    <!--<i class="anticon anticon-lock"></i>-->
+    <!--</div>-->
+    <!--</li>-->
+    <!--&lt;!&ndash; Search Button &ndash;&gt;-->
+    <!--<li class="header-search__btn" >-->
+    <!--<div class="item">-->
+    <!--<i class="anticon anticon-search"></i>-->
+    <!--</div>-->
+    <!--</li>-->
+  </ul>
+  <div class="top-nav"></div>
+  <ul class="top-nav">
+    <!-- Notify -->
+    <!-- Settings -->
+    <li class="hidden-xs">
+      <div class="item" (click)="stockValidityPeriod()">
+        <i nz-icon nzType="dashboard" nzTheme="outline"></i>
+        有效期
+        <span class="warning-num" *ngIf="warningInfo.stockValidityPeriodCount!==0">{{warningInfo.stockValidityPeriodCount}}</span>
+      </div>
+    </li>
+    <li class="hidden-xs">
+      <div class="item" >
+          <i nz-icon nzType="control" nzTheme="outline"></i>
+        <a routerLink="verificat/wating" style="color:#fff;border:none;">性能验证</a>
+        <span class="warning-num" *ngIf="warningInfo.performanceVerificationCount!==0">{{warningInfo.performanceVerificationCount}}</span>
+        
+      </div>
+    </li>
+    <li class="hidden-xs">
+      <div class="item" >
+          <i nz-icon nzType="experiment" nzTheme="outline"></i>
+        <a routerLink="purchase/approval" style="color:#fff;border:none;">请购审批</a>
+        <span class="warning-num" *ngIf="warningInfo.purchaseApprovalInfoCount!==0">{{warningInfo.purchaseApprovalInfoCount}}</span>
+      </div>
+    </li>
+    <li class="hidden-xs">
+      <div class="item" (click)="materialUnArrivedShow()">
+          <i nz-icon nzType="file-exclamation" nzTheme="outline"></i>
+        未到货
+        <span class="warning-num" *ngIf="warningInfo.purchaseMaterialUnArrivedCount!==0">{{warningInfo.purchaseMaterialUnArrivedCount}}</span>
+      </div>
+    </li>
+    <li class="hidden-xs">
+      <div class="item" (click)="materialStockWarningShow()">
+          <i nz-icon nzType="file-zip" nzTheme="outline"></i>
+        库存
+        <span class="warning-num" *ngIf="warningInfo.materialStockAlertCount!==0">{{warningInfo.materialStockAlertCount}}</span>
+      </div>
+    </li>
+    <li class="hidden-xs">
+      <div class="item" (click)="certificateExpirationWarningShow()">
+          <i nz-icon nzType="idcard" nzTheme="outline"></i>
+        注册证
+        <span class="warning-num" *ngIf="warningInfo.certificateExpirationCount!==0">{{warningInfo.certificateExpirationCount}}</span>
+      </div>
+    </li>
+    <li class="hidden-xs">
+      <div class="item" (click)="showSetting()">
+        <i class="anticon anticon-setting"></i>
+        设置
+      </div>
+    </li>
+
+    <li class="hidden-xs">
+      <nz-dropdown nzPlacement="bottomRight">
+        <div class="item d-flex align-items-center px-sm" nz-dropdown>
+          <nz-avatar [nzSrc]="'/assets/images/user.png'" nzSize="small" class="mr-sm"></nz-avatar>
+          {{shownLoginName}}({{organizationUnitName}})
+        </div>
+        <div nz-menu class="width-sm">
+          <div nz-menu-item [nzDisabled]="true"><i class="anticon anticon-user mr-sm"></i>个人中心</div>
+          <div nz-menu-item [nzDisabled]="true"><i class="anticon anticon-setting mr-sm"></i>设置</div>
+
+          <div nz-menu-item (click)="logout()"><i class="anticon anticon-setting mr-sm"></i>退出登录</div>
+        </div>
+      </nz-dropdown>
+    </li>
+  </ul>
+</div>
+
+
+<app-setting #appSetting></app-setting>
+<app-stock-validity-warning #stockValidityWarning></app-stock-validity-warning>
+
+<app-material-un-arrived-warning #materialUnArrivedWarning></app-material-un-arrived-warning>
+<app-material-stock-warning #materialStockWarning></app-material-stock-warning>
+<app-certificate-expiration-warning #certificateExpirationWarning></app-certificate-expiration-warning>

@@ -1,0 +1,50 @@
+<div class="aside-inner" >
+    <ul nz-menu [nzMode]="'inline'" [nzInlineCollapsed]="webSetting.isCollapsed">
+        <li nz-menu-item routerLink="home">
+            <span title>
+                <i nz-icon type="home" theme="outline"></i>
+                <span>主页</span>
+            </span>
+        </li>
+        <!-- <li nz-menu-item nz-tooltip nzPlacement="right" [nzTitle]="isCollapsed ? 'Navigation One' : ''">
+
+        </li> -->
+        <!-- //type="{{root.icon}}" -->
+
+        <li nz-submenu *ngFor="let root of permissions">
+            <span title>
+                <i nz-icon nzType="{{root.icon}}" nzTheme="outline"></i>
+                <span>{{root.displayName}}</span>
+            </span>
+            <ul>
+                <li nz-menu-item routerLink="{{item.url}}" *ngFor="let item of root.children">{{item.displayName}}</li>
+            </ul>
+        </li>
+
+    </ul>
+</div>
+
+
+<!-- <div style="width: 240px;">
+    
+    <ul nz-menu [nzMode]="'inline'" nzTheme="dark" >
+      <li nz-menu-item nz-tooltip nzPlacement="right" [nzTitle]="isCollapsed ? 'Navigation One' : ''">
+        <span title>
+          <i nz-icon type="mail"></i>
+          <span>Navigation One</span>
+        </span>
+      </li>
+      <li nz-submenu>
+        <span title>
+          <i nz-icon type="appstore"></i>
+          <span>Navigation Two</span>
+        </span>
+        <ul>
+          <li nz-menu-item>Option 5</li>
+          <li nz-menu-item>Option 6</li>
+         
+        </ul>
+      </li>
+     
+    </ul>
+  </div> -->

@@ -1,0 +1,30 @@
+<nz-drawer [nzVisible]="isVisible" nzPlacement="right" nzTitle="条码详情" (nzOnClose)="close()" [nzWidth]="720">
+  <nz-table #nzTable [nzData]="data" [nzFrontPagination]=false nz [nzLoading]="loading" nzHideOnSinglePage="true">
+    <thead>
+      <tr>
+        <th>序</th>
+        <th nzShowSort nzSortKey="barcode">号码</th>
+        <th *ngIf="canDelete">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data; let i = index ;">
+
+        <td>{{i+1}}</td>
+        <td>{{item}}</td>
+        <td *ngIf="canDelete">
+          <div class="editable-row-operations">
+            <button nz-button nzSize="small" nzShape="circle" nzType="default" (click)="deleteBarcodes(item)"><i
+                nz-icon type="minus" theme="outline"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <div class="drawer-footer">
+    <button nz-button type="button" (click)="close()" class="ant-btn"
+      style="margin-right: 8px;"><span>取消</span></button>
+    <button nz-button type="button" (click)="save()" class="ant-btn ant-btn-primary"><span>确认</span></button>
+  </div>
+</nz-drawer>

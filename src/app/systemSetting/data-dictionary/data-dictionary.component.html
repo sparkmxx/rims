@@ -1,0 +1,92 @@
+<nz-card class="ch-tab">
+  <div nz-form [nzLayout]="'inline'" class="m-b-20">
+    <nz-form-item>
+      <nz-form-control>
+        <input nz-input placeholder="名称" [(ngModel)]="filter">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="default" (click)="refresh()"><i nz-icon type="search" theme="outline"></i>查询
+        </button>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button (click)="add()"><i nz-icon type="plus" theme="outline"></i> 添加数据字典</button>
+
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <div>
+    <nz-table class="small-table" #nzTable nzBordered [nzData]="data" [nzFrontPagination]=false nzShowSizeChanger [nzLoading]="loading"
+              [(nzPageSize)]=pageSize
+              [(nzPageIndex)]=pageNumber [nzTotal]=totalItems (nzPageSizeChange)="refresh(true)"
+              (nzPageIndexChange)="refresh()">
+      <thead>
+      <tr>
+        <th nzWidth="10%">操作</th>
+        <th nzWidth="10%" nzShowExpand>展示</th>
+        <th nzWidth="10%">序号</th>
+        <th nzWidth="35%">名称</th>
+        <th nzWidth="35%">编码</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-template ngFor let-obj [ngForOf]="nzTable.data" let-i="index">
+        <tr>
+          <td>
+            <div class="editable-row-operations">
+              <nz-dropdown>
+                <button nz-button nzSize="small" nz-dropdown>操作<i nz-icon type="down"></i></button>
+                <ul nz-menu>
+                  <li nz-menu-item (click)="edit(obj)">
+                    <a>修改</a>
+                  </li>
+                  <li nz-menu-item (click)="delete(obj)">
+                    <a>删除</a>
+                  </li>
+                </ul>
+              </nz-dropdown>
+
+            </div>
+          </td>
+          <td nzShowExpand [(nzExpand)]="expandDataCache[i.toString()].expand"></td>
+          <td>{{i+1}}</td>
+          <td>{{obj.name}}</td>
+          <td>{{obj.code}}</td>
+
+        </tr>
+        <tr [nzExpand]="expandDataCache[i.toString()].expand">
+          <td></td>
+          <td colspan="4">
+            <nz-table class="small-table" #innerTable [nzData]="obj.dataDictionaryDetails" nzSize="middle"
+                      [nzShowPagination]="false">
+      <thead>
+      <tr>
+        <th nzWidth="10%">序</th>
+        <th nzWidth="20%">名称</th>
+        <th nzWidth="20%">编码</th>
+        <th nzWidth="20%">值</th>
+        <th nzWidth="20%">排序</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of innerTable.data; let idx=index; ">
+        <td>{{idx+1}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.code}}</td>
+        <td>{{item.value}}</td>
+        <td>{{item.sortRank}}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+    </td>
+    </tr>
+    </ng-template>
+    </tbody>
+    </nz-table>
+  </div>
+</nz-card>
+<app-data-dictionary-edit #dataDictionaryEdit (modalSave)="refresh()"></app-data-dictionary-edit>

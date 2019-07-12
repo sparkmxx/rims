@@ -1,0 +1,33 @@
+<nz-drawer [nzVisible]="isVisible" nzPlacement="right" nzTitle="选择用户" (nzOnClose)="close()" [nzWidth]="720">
+  <nz-table class="small-table" #materials [nzLoading]="saving" nzBordered [nzData]="data" nzHideOnSinglePage="true"
+    [nzPageSize]="15" >
+    <thead>
+      <tr>
+        <th nzWidth="60px">序</th>
+        <th nzWidth="100px">部门</th>
+        <th nzWidth="100px">仓库</th>
+        <th nzWidth="100px">出库设置</th>
+        <th nzWidth="100px">入库设置</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of materials.data;let i = index;">
+        <td>{{i+1}}</td>
+        <td>{{item.organizationName}}</td>
+        <td>{{item.warehouseInfoName}}</td>
+        <td>
+          <nz-switch [(ngModel)]="item.isAutoOut">
+          </nz-switch>
+        </td>
+        <td>
+          <nz-switch [(ngModel)]="item.isAutoIn">
+          </nz-switch>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <div class="drawer-footer">
+    <button type="button" (click)="close()" class="ant-btn" style="margin-right: 8px;"><span>取消</span></button>
+    <button type="button" (click)="save()" class="ant-btn ant-btn-primary"><span>确认</span></button>
+  </div>
+</nz-drawer>

@@ -1,0 +1,7 @@
+<div class="wrapper" [ngClass]="{'coll-apsed':webSetting.isCollapsed}">
+  <app-header class="header"></app-header>
+  <app-sidebar class="aside"></app-sidebar>
+  <div class="content" style="min-height: 600px;">
+    <router-outlet></router-outlet>
+  </div>
+</div>

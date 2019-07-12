@@ -1,0 +1,94 @@
+<nz-card class="ch-tab">
+  <div class="search-list">
+    <div nz-form nzLayout="inline" class="m-b-20">
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24">起始</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="queryDTO.startDate"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24">结束</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="queryDTO.endDate"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <app-query-condition [queryDTO]="queryDTO"></app-query-condition>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-form-label [nzSm]="6" [nzXs]="24">字段</nz-form-label>
+          <nz-form-control [nzSm]="18" [nzXs]="24">
+            <input nz-input placeholder="关键字" [(ngModel)]="queryDTO.filter" />
+          </nz-form-control>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="default" (click)="refresh()"><i nz-icon type="search"
+              theme="outline"></i>查询</button>
+        </nz-form-control>
+
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="default" (click)="clearParam()"><i nz-icon type="undo"
+              theme="outline"></i>重置</button>
+        </nz-form-control>
+
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-table class="m-t-20 small-table" #nzTable [nzData]="data" [nzFrontPagination]=false nzShowSizeChanger
+    [nzLoading]="isTableLoading" [(nzPageSize)]=pageSize [(nzPageIndex)]=pageNumber [nzTotal]=totalItems
+    (nzPageSizeChange)="refresh(true)" (nzPageIndexChange)="refresh()">
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+      <tr>
+        <th nzWidth="100px">操作</th>
+        <th nzWidth="50px" >序</th>
+        <th nzWidth="220px" >名称</th>
+        <th nzWidth="120px">院内码</th>
+        <th nzWidth="80px">盘点量</th>
+        <th nzWidth="100px">实际盘点量</th>
+        <th nzWidth="100px">库存量</th>
+        <th nzWidth="100px">上月盘点量</th>
+        <th nzWidth="100px">本月入库量</th>
+        <th nzWidth="110px">本月出库量</th>
+        
+        <th nzWidth="120px">批号</th>
+        <th nzWidth="120px">效期</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data; let i = index ;">
+        <td>
+            <div class="editable-row-operations" *ngIf="item.number!==item.actualNumber&&!item.isHandle">
+                <nz-dropdown>
+                  <button nz-button nzSize="small" nz-dropdown>操作<i nz-icon type="down"></i></button>
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="inventoryOutOrStorage(item.id)" >
+                      <a>盘平</a>
+                    </li>
+                  </ul>
+                </nz-dropdown>
+
+              </div>
+        </td>
+        <td>{{i+1}}</td>
+        <td>{{item.materialName}}</td>
+        <td>{{item.hospitalMaterialCode}}</td>
+        <td>{{item.number}}</td>
+        <td>{{item.actualNumber}}</td>
+        <td>{{item.inventoryShareInfo.stockNumber}}</td>
+        <td>{{item.inventoryShareInfo.lastMonthInventoryNumber}}</td>
+        <td>{{item.inventoryShareInfo.thisMonthStorageNumber}}</td>
+        <td>{{item.inventoryShareInfo.thisMonthOutStorageNumber}}</td>
+        
+        <td>{{item.batchNo}}</td>
+        <td>{{item.expiryDate | date:'yyyy-MM-dd'}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+</nz-card>

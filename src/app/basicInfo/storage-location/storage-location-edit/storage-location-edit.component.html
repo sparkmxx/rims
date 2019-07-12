@@ -1,0 +1,79 @@
+<nz-drawer [nzVisible]="isVisible" nzPlacement="right" nzTitle="库位" (nzOnClose)="close()" [nzWidth]="920">
+
+  <form nz-form [formGroup]="validateForm">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="organizationUnitId">所属组织</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-input-group>
+          <nz-tree-select style="width:100%;" formControlName="organizationUnitId" [nzNodes]="treeNodes" nzShowSearch
+            nzPlaceHolder="所属组织" [(ngModel)]="saveDto.organizationId">
+          </nz-tree-select>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nzFlex>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="warehouseInfoId">仓库</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-select formControlName="warehouseInfoId" [(ngModel)]="saveDto.warehouseInfoId" nzAllowClear
+          nzPlaceHolder="厂商类型">
+          <nz-option *ngFor="let option of warehouses" [nzValue]="option.value" [nzLabel]="option.name"></nz-option>
+        </nz-select>
+        <nz-form-explain
+          *ngIf="validateForm.get('warehouseInfoId').dirty && validateForm.get('warehouseInfoId').errors">
+          请选择 厂商类型
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nzFlex>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="locationName">名称</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input formControlName="locationName" placeholder="名称" name="locationName"
+          [(ngModel)]="saveDto.locationName">
+        <nz-form-explain *ngIf="validateForm.get('locationName').dirty && validateForm.get('locationName').errors">
+          请填写名称
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <button nz-button type="button" class="ant-btn" (click)="openChildren()">关联物料</button>
+  </form>
+  <nz-table class="small-table m-t-20" #materialsTable nzBordered [nzData]="saveDto.storageLocationDetails"
+  nzHideOnSinglePage="true" [nzPageSize]="50" [nzScroll]="{ y: '600px',x:'500px'}">
+  <thead>
+    <tr>
+      <th nzWidth="50px">序</th>
+      <th nzWidth="250px">名称</th>
+      <th nzWidth="150px">院内码</th>
+      <th nzWidth="150px">简称</th>
+      <th nzWidth="60px" nzRight="0px">操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of materialsTable.data;let i = index;">
+      <td>{{i+1}}</td>
+      <td>{{item.materialName}}</td>
+      <td>{{item.hospitalMaterialCode}}</td>
+      <td>{{item.materialShortName}}</td>
+      <td>
+          <div class="editable-row-operations">
+              <button nz-button nzSize="small" nzShape="circle" nzType="default"
+                (click)="deleteStorageLocationDetails(item)"><i nz-icon type="minus" theme="outline"></i>
+              </button>
+            </div>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+
+  <div class="drawer-footer">
+    <button nz-button type="button" (click)="close()" class="ant-btn"
+      style="margin-right: 8px;"><span>取消</span></button>
+    <button nz-button type="button" (click)="save()" class="ant-btn ant-btn-primary" [disabled]="!validateForm.valid"
+      [nzLoading]="saving"><span>确认</span></button>
+  </div>
+  <app-materials-select #materialsSelect (modalSave)="confirmSelect($event)"></app-materials-select>
+  <!-- <nz-drawer [nzWidth]="620" [nzClosable]="false" [nzVisible]="childrenVisible" nzTitle="物料关联" (nzOnClose)="closeChildren()">
+   
+  </nz-drawer> -->
+</nz-drawer>
+<!-- 
+[disabled]="!validateForm.valid" -->

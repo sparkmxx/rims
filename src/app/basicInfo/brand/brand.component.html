@@ -1,0 +1,60 @@
+<nz-card class="ch-tab">
+    <div class="search-list">
+      <div class="row custom-form">
+          <div class="col-xs-4 col-lg-3">
+              <div class="form-group">
+                  <input nz-input placeholder="名称" [(ngModel)]="filter" (keypress)="keypress($event)">
+              </div>
+          </div>
+  
+          <div class="col-xs-4 col-lg-3 ">
+              <button nz-button nzType="default" (click)="refresh()"><i nz-icon type="search" theme="outline"></i>查询</button>
+              &nbsp;
+              <button nz-button nzType="default" (click)="edit()"><i nz-icon type="plus-circle" theme="outline"></i>新增</button>
+          </div>
+      </div>
+  </div>
+  
+    <nz-table class="m-t-20 md-table" #nzTable [nzData]="data" [nzFrontPagination]=false nzShowSizeChanger [nzLoading]="loading" [(nzPageSize)]=pageSize
+              [(nzPageIndex)]=pageNumber [nzTotal]=totalItems (nzPageSizeChange)="refresh(true)" (nzPageIndexChange)="refresh()">
+      <thead (nzSortChange)="sort($event)" nzSingleSort>
+      <tr>
+        <th>操作</th>
+        <th>序</th>
+        <th nzShowSort nzSortKey="name">名称</th>
+        <th nzShowSort nzSortKey="shortName">简称</th>
+        <th nzShowSort nzSortKey="code">编码</th>
+        <th nzShowSort nzSortKey="creationTime">创建时间</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of nzTable.data; let i = index ;">
+        <td>
+            <div class="editable-row-operations">
+                <nz-dropdown>
+                  <button nz-button nzSize="small" nz-dropdown>操作<i nz-icon type="down"></i></button>
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="edit(item.id)">
+                      <a>修改</a>
+                    </li>
+                    <li nz-menu-item (click)="delete(item)">
+                      <a>删除</a>
+                    </li>
+                  </ul>
+                </nz-dropdown>
+  
+              </div>
+        </td>
+        <td>{{i+1}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.shortName}}</td>
+        <td>{{item.code}}</td>
+       
+        <td>{{item.creationTime | date:'yyyy-MM-dd'}}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+  
+  </nz-card>
+  
+  <app-brand-edit #brandEditComponentModal (modalSave)="refresh()"></app-brand-edit>

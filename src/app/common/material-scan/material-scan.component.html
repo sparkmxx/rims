@@ -1,0 +1,65 @@
+<nz-modal [(nzVisible)]="isVisible" nzWidth="80%" [nzTitle]="modalTitle" [nzContent]="modalContent"
+  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+  <ng-template #modalTitle>
+    物料扫码
+  </ng-template>
+  <ng-template #modalContent>
+
+    <div style="min-height: 400px;">
+
+      <div nz-row class="m-b-20">
+        <div nz-col nzSpan="6" style="text-align: right;padding:5px 15px;">
+          条码号：
+        </div>
+        <div nz-col nzSpan="12">
+          <input #barcodeInput nz-input placeholder="条码号：" autofocus  name="barcode" [(ngModel)]="barcode" (keypress)="scan($event)">
+        </div>
+      </div>
+      <nz-table class="small-table" #materials [nzLoading]="scaning" nzBordered [nzData]="data" nzHideOnSinglePage="true" [nzPageSize]="15"
+        [nzScroll]="{ x:'1000px',y: '540px' }">
+        <thead>
+          <tr>
+            <th nzWidth="60px" nzLeft="0px">序</th>
+            <th nzWidth="200px" nzLeft="60px">名称</th>
+            <th nzWidth="250px" nzLeft="260px">条码号</th>
+            <th nzWidth="100px">院内码</th>
+            <th nzWidth="100px">简称</th>
+            <th nzWidth="100px">规格</th>
+            <th nzWidth="100px">单位</th>
+            <th nzWidth="100px">批次</th>
+            <th nzWidth="100px">效期</th>
+            <th nzWidth="60px" nzRight="0px">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of materials.data;let i = index;">
+            <td nzLeft="0px">{{materials.data.length-i}}</td>
+            <td nzLeft="60px" >{{item.materialName}}</td>
+            <td nzLeft="260px">{{item.barcode}}</td>
+            <td >{{item.hospitalMaterialCode}}</td>
+            <td>{{item.material.shortName}}</td>
+            <td>{{item.material.specification}}</td>
+            <td>{{item.material.unitName}}</td>
+            <td>{{item.batchNo}}</td>
+            <td>{{item.expiryDate | date:'yyyy-MM-dd'}}</td>
+            
+            <td nzRight="0px">
+              <div class="editable-row-operations">
+                <button nz-button nzSize="small" nzShape="circle" nzType="default"
+                  (click)="delete(item)"><i nz-icon type="minus" theme="outline"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+
+  </ng-template>
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">取消</button>
+    <button nz-button nzType="primary" (click)="save()" 
+      [nzLoading]="isConfirmLoading">保存
+    </button>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,100 @@
+<nz-card class="ch-tab">
+  <div class="search-list">
+    <div nz-form nzLayout="inline" class="m-b-20 query-condition">
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24">起始</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="queryDTO.startDate"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24">结束</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="queryDTO.endDate"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <app-query-condition [queryDTO]="queryDTO"></app-query-condition>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-form-label [nzSm]="6" [nzXs]="24">字段</nz-form-label>
+          <nz-form-control [nzSm]="18" [nzXs]="24">
+            <input nz-input placeholder="关键字" [(ngModel)]="queryDTO.filter" />
+          </nz-form-control>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="default" (click)="refresh()"><i nz-icon type="search"
+              theme="outline"></i>查询</button>
+        </nz-form-control>
+
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="default" (click)="clearParam()"><i nz-icon type="undo"
+              theme="outline"></i>重置</button>
+        </nz-form-control>
+
+      </nz-form-item>
+      <nz-form-item>
+          <nz-form-control>
+            总数：<span class="font-red">{{sumQualtity}}</span>
+          </nz-form-control>
+  
+        </nz-form-item>
+    </div>
+  </div>
+
+  <nz-table class="m-t-20 small-table" #nzTable [nzData]="data" [nzFrontPagination]=false nzShowSizeChanger
+    [nzLoading]="loading" [(nzPageSize)]=pageSize [(nzPageIndex)]=pageNumber [nzTotal]=totalItems
+    (nzPageSizeChange)="refresh(true)" (nzPageIndexChange)="refresh()" [nzScroll]="{ x: '1200px', y: '550px' }">
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+      <tr>
+        <th nzWidth="100px" nzLeft="0px"></th>
+        <th nzWidth="50px" nzLeft="100px">序</th>
+        <th nzWidth="180px" nzLeft="150px" nzShowSort nzSortKey="materialName">名称</th>
+        <th nzWidth="130px" nzShowSort nzSortKey="hospitalMaterialCode">院内码</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="batchNo">批号</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="expiryDate">效期</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="actualNumber">数量</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="material.brandName">品牌</th>
+        <th nzWidth="150px" nzShowSort nzSortKey="materialOutStorage.storageOrderNo">出库单号</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="materialOutStorage">部门</th>
+        <th nzWidth="150px" nzShowSort nzSortKey="materialOutStorage.storageTime">出库时间</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="materialOutStorage.storageUserId">出库人</th>
+        <th nzWidth="100px" nzShowSort nzSortKey="materialOutStorage.storageType">出库类型</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data; let i = index ;">
+        <td nzLeft="0px">
+          <div class="editable-row-operations">
+            <nz-dropdown>
+              <button nz-button nzSize="small" nz-dropdown>操作<i nz-icon type="down"></i></button>
+              <ul nz-menu>
+                <li nz-menu-item (click)="getBarcodes(item)">
+                  <a>条码详情</a>
+                </li>
+              </ul>
+            </nz-dropdown>
+
+          </div>
+        </td>
+        <td nzLeft="100px">{{i+1}}</td>
+        <td nzLeft="150px">{{item.materialName}}</td>
+        <td>{{item.hospitalMaterialCode}}</td>
+        <td>{{item.batchNo}}</td>
+        <td>{{item.expiryDate | date:'yyyy-MM-dd'}}</td>
+        <td>{{item.number}}</td>
+        <td>{{item.material.brandName}}</td>
+        <td>{{item.materialOutStorage.outStorageOrderNo}}</td>
+        <td>{{item.materialOutStorage.organizationName}}</td>
+        <td>{{item.materialOutStorage.outStorageTime  | date:'yyyy-MM-dd'}}</td>
+        <td>{{item.materialOutStorage.outStorageUserId | formatUser}}</td>
+        <td>{{item.materialOutStorage.outStorageType | enumType:'OutStorageType'}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+</nz-card>
+<app-material-barcodes #barcodeInfos></app-material-barcodes>

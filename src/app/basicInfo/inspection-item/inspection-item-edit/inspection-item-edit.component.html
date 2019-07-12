@@ -1,0 +1,119 @@
+<nz-drawer [nzVisible]="isVisible" nzPlacement="right" nzTitle="检验项目" (nzOnClose)="close()" [nzWidth]="720">
+
+  <form nz-form [formGroup]="validateForm">
+    <!-- //CalculationType -->
+    <nz-form-item nzFlex>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="performanceVerificationType">验证类型</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-select formControlName="performanceVerificationType" [(ngModel)]="saveDto.performanceVerificationType" nzAllowClear
+          nzPlaceHolder="验证类型">
+          <nz-option *ngFor="let option of enumArray.PerformanceVerificationType" [nzValue]="option.value" [nzLabel]="option.description"></nz-option>
+        </nz-select>
+        <nz-form-explain
+          *ngIf="validateForm.get('performanceVerificationType').dirty && validateForm.get('performanceVerificationType').errors">
+          请选择 厂商类型
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nzFlex>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">名称</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input formControlName="name" placeholder="名称" name="name"
+          [(ngModel)]="saveDto.name">
+        <nz-form-explain *ngIf="validateForm.get('name').dirty && validateForm.get('name').errors">
+          请填写名称
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nzFlex>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="calculationType">验证公式</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-select formControlName="calculationType" [(ngModel)]="saveDto.calculationType" (ngModelChange)="selectKeyToName(enumArray.CalculationType,saveDto,'calculationType','calculationFormula','description','value')" nzAllowClear
+          nzPlaceHolder="验证公式">
+          <nz-option *ngFor="let option of enumArray.CalculationType" [nzValue]="option.value" [nzLabel]="option.description"></nz-option>
+        </nz-select>
+        <nz-form-explain
+          *ngIf="validateForm.get('calculationType').dirty && validateForm.get('calculationType').errors">
+          请选择 厂商类型
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+
+
+
+    <nz-form-item nzFlex>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="minReferenceRange">最小参考范围</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-input-number placeholder="最小参考范围" formControlName="minReferenceRange" name="minReferenceRange"  [(ngModel)]="saveDto.minReferenceRange" [nzMin]="0" [nzMax]="10000" [nzStep]="1"></nz-input-number>
+        <nz-form-explain *ngIf="validateForm.get('minReferenceRange').dirty && validateForm.get('minReferenceRange').errors">
+          最小参考范围
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nzFlex>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="maxReferenceRange">最大参考范围</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-input-number placeholder="最大参考范围" formControlName="maxReferenceRange" name="maxReferenceRange"  [(ngModel)]="saveDto.maxReferenceRange" [nzMin]="0" [nzMax]="10000" [nzStep]="1"></nz-input-number>
+        <nz-form-explain *ngIf="validateForm.get('maxReferenceRange').dirty && validateForm.get('maxReferenceRange').errors">
+          最大参考范围
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nzFlex>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="referenceUnit">单位</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+          <input nz-input formControlName="referenceUnit" placeholder="单位" name="referenceUnit"
+          [(ngModel)]="saveDto.referenceUnit">
+        <nz-form-explain *ngIf="validateForm.get('referenceUnit').dirty && validateForm.get('referenceUnit').errors">
+          最大参考范围
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nzFlex>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="deviation">偏差%</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-input-number formControlName="deviation" name="deviation" placeholder="偏差"  [(ngModel)]="saveDto.deviation" [nzMin]="0" [nzMax]="10000" [nzStep]="1"></nz-input-number>
+        <nz-form-explain *ngIf="validateForm.get('deviation').dirty && validateForm.get('deviation').errors">
+            偏差
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item >
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired >备注</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+          <input nz-input  placeholder="备注" 
+          [(ngModel)]="saveDto.remark" [ngModelOptions]="{standalone: true}" >
+        
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item *ngIf="this.saveDto.performanceVerificationType===enumObject.PerformanceVerificationType.NegativePositive">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="referenceResult">验证公式</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-select formControlName="referenceResult" [(ngModel)]="saveDto.referenceResult"  nzAllowClear
+          nzPlaceHolder="验证公式">
+          <nz-option *ngFor="let option of dicts" [nzValue]="option.value" [nzLabel]="option.name"></nz-option>
+        </nz-select>
+        <nz-form-explain
+          *ngIf="validateForm.get('referenceResult').dirty && validateForm.get('referenceResult').errors">
+          请选择 验证公式
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <div class="drawer-footer">
+    <button nz-button type="button" (click)="close()" class="ant-btn"
+      style="margin-right: 8px;"><span>取消</span></button>
+    <button nz-button type="button" (click)="save()" class="ant-btn ant-btn-primary" [disabled]="!validateForm.valid"
+      [nzLoading]="saving"><span>确认</span></button>
+  </div>
+  
+</nz-drawer>
+<!-- 
+[disabled]="!validateForm.valid" -->

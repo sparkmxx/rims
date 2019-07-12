@@ -1,0 +1,70 @@
+<nz-card class="ch-tab">
+    <div class="search-list">
+      <div nz-form nzLayout="inline" class="m-b-20">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24">起始</nz-form-label>
+          <nz-form-control [nzSm]="18" [nzXs]="24">
+            <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="queryDTO.startDate"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24">结束</nz-form-label>
+          <nz-form-control [nzSm]="18" [nzXs]="24">
+            <nz-date-picker [nzFormat]="'yyyy-MM-dd'" [(ngModel)]="queryDTO.endDate"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+        <nz-form-control>
+            <nz-form-label [nzSm]="6" [nzXs]="24">用户名</nz-form-label>
+            <nz-form-control [nzSm]="18" [nzXs]="24">
+              <input nz-input placeholder="用户名" [(ngModel)]="userName" (keypress)="keypress($event)"/>
+            </nz-form-control>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-control>
+                <nz-form-label [nzSm]="6" [nzXs]="24">服务名</nz-form-label>
+                <nz-form-control [nzSm]="18" [nzXs]="24">
+                  <input nz-input placeholder="服务名" [(ngModel)]="serviceName" (keypress)="keypress($event)"/>
+                </nz-form-control>
+              </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-control>
+                <button nz-button nzType="default" (click)="refresh()"><i nz-icon type="search" theme="outline"></i>查询</button>
+            </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  
+    <nz-table class="m-t-20 small-table" #nzTable [nzData]="data" [nzFrontPagination]=false nzShowSizeChanger [nzLoading]="isTableLoading"
+      [(nzPageSize)]=pageSize [(nzPageIndex)]=pageNumber [nzTotal]=totalItems (nzPageSizeChange)="refresh(true)"
+      (nzPageIndexChange)="refresh()" >
+      <thead (nzSortChange)="sort($event)" nzSingleSort>
+        <tr>
+          <th nzWidth="50px">序</th>
+          <th  >执行时间</th>
+          <th >用户名</th>
+          <th >服务</th>
+          <th >方法名</th>
+          <th >持续时间</th>
+          <th >IP地址</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of nzTable.data; let i = index ;">
+
+          <td>{{i+1}}</td>
+          <td>{{item.executionTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+          <td>{{item.userName}}</td>
+          <td>{{item.serviceName}}</td>
+
+          <td>{{item.methodName}}</td>
+          <td>{{item.executionDuration}}s</td>
+          <td>{{item.clientIpAddres}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  
+  </nz-card>
+  

@@ -1,0 +1,153 @@
+<nz-card class="ch-tab">
+    <div class="banner-changer">
+        <app-banner-column-changer></app-banner-column-changer>
+    </div>
+  <div nz-row>
+    <div nz-col [nzSpan]="webSettings.bannerLeft">
+      <div class="left-banner">
+          <div nz-form nzLayout="vertical" class="vertical-form">
+              <app-query-condition [queryDTO]="queryDTO"></app-query-condition>
+          </div>
+          <div class="m-b-20" nz-row>
+            <div nz-col nzSpan="16">
+              <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                <input type="text" nz-input placeholder="请输入名称，编码..." [(ngModel)]="queryDTO.filter"
+                  (keypress)="keypress($event)" formCotrolName="filter" />
+              </nz-input-group>
+              <ng-template #suffixIconButton>
+                <button nz-button nzType="primary" nzSearch (click)="refresh()"><i nz-icon type="search"></i></button>
+              </ng-template>
+            </div>
+            <div class="p-l-20" nz-col nzSpan="8">
+              <button nz-button nzType="default" (click)="confirmAdd()">添加</button>
+            </div>
+          </div>
+        <nz-table class="small-table" #virtualTable nzVirtualScroll [nzVirtualItemSize]="54" [nzData]="listOfData"
+          [nzFrontPagination]="false" [nzLoading]="isTableLoading" [nzShowPagination]="false"
+          [nzScroll]="{ x: '520px', y: '340px' }">
+          <thead>
+            <tr>
+      
+              <th nzWidth="40px" nzLeft="0px">序</th>
+              
+              <th nzWidth="180px">请领单号</th>
+              <th nzWidth="100px" >请领部门</th>
+              <th nzWidth="100px">请领时间</th>
+              <th nzWidth="100px">请领人</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <ng-template nz-virtual-scroll let-data let-index="index">
+              <tr (click)="selectRequest(data)">
+                <td nzLeft="0px" >{{index+1}}</td>
+                <td>
+                  {{ data.requestOrderNo}}
+                </td>
+                <td>{{data.organizationName}}</td>
+                <td>{{data.applicationTime | date:'yyyy-MM-dd'}}</td>
+                <td>{{data.applicantUserId | formatUser}}</td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </nz-table>
+      </div>
+      <div>
+
+
+      </div>
+    </div>
+    <div nz-col [nzSpan]="webSettings.bannerRight">
+      <div class="m-b-10">
+        <button class="m-r-20" nz-button nzType="default" (click)="outStorage()">出库</button>
+        <button class="m-r-20" nz-button nzType="default" (click)="scan()">扫码请领</button>
+        <button class="m-r-20" nz-button nzType="default" (click)="clear()">清空</button>
+        
+        <button class="m-r-20" nz-button nzType="danger" *ngIf="errorInfos.length>0" (click)="(isVisible=true)">当前未扫入条码 <i
+          nz-icon nzType="bars" nzTheme="outline"></i></button>
+      </div>
+      <nz-table class="small-table" #applyTable [nzData]="applys" [nzFrontPagination]="false" [nzLoading]="loading"
+        [nzShowPagination]="false" [nzScroll]="{ x: '630px', y: '640px' }">
+        <thead>
+          <tr>
+            <th nzWidth="50px" nzLeft="0px">序</th>
+            <th nzWidth="150px" nzLeft="50px">名称</th>
+            <th nzWidth="100px">院内码</th>
+            <th nzWidth="70px" >库存</th>
+            <th nzWidth="130px">出库数量</th>
+            <th nzWidth="70px" >单位</th>
+            <th nzWidth="60px" nzRight="0px">删除</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of applyTable.data;let i = index;">
+            <td nzLeft="0px">{{i+1}}</td>
+            <td nzLeft="50px">{{item.materialName}}</td>
+            <td>{{item.hospitalMaterialCode}}</td>
+            <td>{{item.stockNumber}}</td>
+            <td>
+                <div class="editable-cell" *ngIf="!(item.barcodes&&item.barcodes.length>0)" >
+                  <div class="editable-cell-text-wrapper">
+                    <div class="editable-cell-text-wrapper">
+                      <nz-input-number placeholder="出库数量" 
+                        [(ngModel)]="item.number" [nzMin]="0" [nzMax]="100000" [nzStep]="1"></nz-input-number>
+                    </div>
+                  </div>
+                </div>
+                <span *ngIf="item.barcodes&&item.barcodes.length>0">
+                    {{item.number}}
+                    <button class="m-l-10" *ngIf="item.barcodes&&item.barcodes.length>0" (click)="showBarcodes(item)" nz-button
+                      nzType="default" nzSize="small"><i nz-icon nzType="barcode" nzTheme="outline"></i></button>
+                </span>
+              </td>
+            <td>{{item.unitName}}</td>
+            <td nzRight="0px">
+              <div class="editable-row-operations">
+                <button nz-button nzSize="small" nzShape="circle" nzType="default" (click)="deleteDetail(item)"><i
+                    nz-icon type="minus" theme="outline"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+
+    </div>
+  </div>
+</nz-card>
+<app-material-scan #materialScanModal (modalSave)="scanConfirm($event)"></app-material-scan>
+<app-material-barcodes #materialBarcodes (modalSave)="barcodesConfirm($event)"></app-material-barcodes>
+<nz-modal [(nzVisible)]="isVisible" nzWidth="80%" [nzTitle]="modalTitle" [nzContent]="modalContent"
+  (nzOnCancel)="handleCancel()" (nzOnOk)="handleCancel()">
+  <ng-template #modalTitle>
+    扫码未录入信息
+  </ng-template>
+  <ng-template #modalContent>
+
+    <div style="min-height: 400px;">
+
+
+      <nz-table class="small-table" #infoTable [nzLoading]="loading" nzBordered [nzData]="errorInfos"
+        nzHideOnSinglePage="true">
+        <thead>
+          <tr>
+            <th nzWidth="60px">序</th>
+            <th nzWidth="280px">物料名称</th>
+            <th>院内码</th>
+            <th>条码号</th>
+            <th>错误原因</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of infoTable.data;let i = index;">
+            <td nzLeft="0px">{{i+1}}</td>
+            <td nzLeft="60px">{{item.materialName}}</td>
+            <td>{{item.hospitalMaterialCode}}</td>
+            <td>{{item.barcode}}</td>
+            <td>{{item.message}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </ng-template>
+</nz-modal>
